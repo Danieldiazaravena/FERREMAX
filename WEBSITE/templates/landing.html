@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="/static/CSS/styleLanding.css">
+{% endblock %}
+
+{% block container %}
+
+<!-- CAROUSEL PENDIENTE -->
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+    </div>
+    
+    <div class="carousel-inner">
+        
+    </div>
+  
+    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  
+  
+    <div class="container marketing">
+  
+      <!-- CATEGORIAS -->
+      <div class="row">
+        <div class="col-lg-4">
+          <img src="#" alt="" width="250" height="250" class="border border-dark border-2">
+  
+          <h2>Herramientas</h2>
+          <p><a class="btn btnLanding" href="#">Ver Mas &raquo;</a></p>
+        </div>
+  
+        <div class="col-lg-4">
+          <img src="#" alt="" width="250" height="250" class="border border-dark border-2">
+  
+          <h2>Materiales</h2>
+          <p><a class="btn btnLanding" href="#">Ver Mas &raquo;</a></p>
+        </div>
+  
+        <div class="col-lg-4">
+          <img src="#" alt="" width="250" height="250" class="border border-dark border-2">
+  
+          <h2>Equipamiento</h2>
+          <p><a class="btn btnLanding" href="#">Ver Mas &raquo;</a></p>
+        </div>
+      </div>
+  
+  
+    
+
+{% endblock %}
