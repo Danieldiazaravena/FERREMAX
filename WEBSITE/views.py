@@ -16,3 +16,7 @@ def Register(request):
 def Landing(request):
 
     return render(request, 'landing.html')
+
+def Woi(request):
+
+    return render(request, 'woi.html')
