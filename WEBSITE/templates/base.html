@@ -17,10 +17,28 @@
         <div class="container-fluid navCont">
             <div class="izq">
                 <h1 class="logoNav ps-4 pe-4 pt-1 pb-1 m-1">FERREMAX</h1>
-                <h5 class="ms-4 navItem">Inicio</h5>
-                <h5 class="navItem">Catalogo</h5>
-                <h5 class="navItem">Quienes somos</h5>
-                <h5 class="navItem">Contactanos</h5>
+                <h5 class="ms-4 navItem"> <a class="nav-link" href="{% url 'landing' %}">Inicio</a></h5>
+                <h5 class="ms-4 navItem"> <a class="nav-link" href="{% url 'catalogo' %}">Catálogo</a></h5>
+                  <!--  (Javier) Voy a dejar estas categorias como comentarios de momento 
+                  <h5 class="navItem">Quienes somos</h5>
+                  <h5 class="navItem">Contactanos</h5>
+                  -->
+                  <!-- funcionalidades dependientes del tipo de usuario -->
+                  {% if user.is_staff %}
+                  <h5 class="ms-4 navItem"> <a class="nav-link" href="{% url 'agregar' %}">Agregar producto</a></h5>
+                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Generar informes</a></h5>
+                  {% endif %}
+                  {% if grupo == 'vendedor' %}
+                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Gestionar ventas</a></h5>
+                  {% endif %}
+                  {% if grupo == 'bodeguero' %}
+                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Inventario</a></h5>
+                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Preparar de pedidos</a></h5>
+                  {% endif %}
+                  {% if grupo == 'contador' %}
+                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Finanzas</a></h5>
+                  {% endif %}
+
             </div>
             <div class="der">
                 <div class="dropNav p-1 ps-2 pe-2 m-1"><!-- SEARCH -->
@@ -35,7 +53,11 @@
                             <i class="bi bi-person-fill" style="color: #014F98"></i>
                         </button>
                         <ul class="dropdown-menu">
+                          {% if user.is_authenticated %}
+                          <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                          {% else %}
                           <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                          {% endif %}
                         </ul>
                       </div>
                 </div>
