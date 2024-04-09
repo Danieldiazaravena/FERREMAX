@@ -1,36 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 {% block css %}
-<link rel="stylesheet" href="/static/CSS/styleLanding.css">
+<link rel="stylesheet" href="/static/CSS/styleAgregar.css">
 {% endblock %}
 
-{% block container %}
-
-<!-- CAROUSEL PENDIENTE -->
-<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-    </div>
-    
-    <div class="carousel-inner">
-        
-    </div>
-  
-    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-  
-  
+{% block container %}  
     <div class="container marketing">
       <div class="row">
         <div class="col-lg 1"></div>
         <div class="col-lg-10">
-          <h2 class="text-center">Agregar un producto nuevo</h2>
+          <h2 class="text-center mt-5">Agregar un producto nuevo</h2>
           <h3 class="text-center" style="color: green;">{{mensaje}}</h3>
           <br><br>
           <!-- FORMULARIO PARA AGREGAR UN PRODUCTO NUEVO -->
@@ -49,20 +28,17 @@
               <textarea class="form-control" id="IdDesc" name="descripción" minlength="8" maxlength="400" required></textarea>
               <label class="form-label" for="IdDesc">descripción</label>
             </div>
-            <label for="Idcategoria">Categoria</label>
-            <select aria-label="Default select example" id="id_categoria" name="categoria" required>
+            <select aria-label="Default select example" id="id_categoria" name="categoria" required class="form-select mb-1" >
               <option selected disabled value="">Seleccione una categoria</option>
               {% for categoria in cat %}
               <option value="{{categoria.id_categoria}}">{{categoria.nombre_categoria}}</option>
               {% endfor %}
             </select>
-            <br><br>
-            <br><br>
             <label for="Idimagen">Subir imagen :  </label>
-            <input type="file" id="Idimagen" name="imagen" accept="image/png, image/jpeg, image/jpg, image/webp" required>
+            <input type="file" id="Idimagen" name="imagen" accept="image/png, image/jpeg, image/jpg, image/webp" required class="form-control">
       
-            <center><button class="btt" type="submit">Publicar</button></center>
-            <center><button class="btt" onclick="history.back()">Volver</button></center>
+            <center><button class="btt btn btn-outline-primary" type="submit">Publicar</button></center>
+            <center><button class="btt btn btn-outline-primary" onclick="history.back()">Volver</button></center>
         
           </form>
         </div>
