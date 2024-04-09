@@ -17,47 +17,58 @@
         <div class="container-fluid navCont">
             <div class="izq">
                 <h1 class="logoNav ps-4 pe-4 pt-1 pb-1 m-1">FERREMAX</h1>
-<<<<<<< HEAD
-                <a href="{% url 'landing' %}"><h5 class="ms-4 navItem">Inicio</h5></a>
-                <a href="{% url 'woi' %}"><h5 class="navItem">Catalogo</h5></a>
-                <a href="{% url 'woi' %}"><h5 class="navItem">Quienes somos</h5></a>
-                <a href="{% url 'woi:' %}"><h5 class="navItem">Contactanos</h5></a>
-=======
-                <h5 class="ms-4 navItem"> <a class="nav-link" href="{% url 'landing' %}">Inicio</a></h5>
-                <h5 class="ms-4 navItem"> <a class="nav-link" href="{% url 'catalogo' %}">Catálogo</a></h5>
-                  <!--  (Javier) Voy a dejar estas categorias como comentarios de momento 
-                  <h5 class="navItem">Quienes somos</h5>
-                  <h5 class="navItem">Contactanos</h5>
-                  -->
-                  <!-- funcionalidades dependientes del tipo de usuario -->
-                  {% if user.is_staff %}
-                  <h5 class="ms-4 navItem"> <a class="nav-link" href="{% url 'agregar' %}">Agregar producto</a></h5>
-                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Generar informes</a></h5>
-                  {% endif %}
-                  {% if grupo == 'vendedor' %}
-                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Gestionar ventas</a></h5>
-                  {% endif %}
-                  {% if grupo == 'bodeguero' %}
-                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Inventario</a></h5>
-                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Preparar de pedidos</a></h5>
-                  {% endif %}
-                  {% if grupo == 'contador' %}
-                  <h5 class="ms-4 navItem"> <a class="nav-link" href="">Finanzas</a></h5>
-                  {% endif %}
-
->>>>>>> 756924f3d7b5b9b839217d0aa57fcf5fad41e17f
+                <div class="wrapper">
+                  <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'landing' %}"><span>Inicio</span></a>
+                </div>
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'catalogo' %}"><span>Catálogo</span></a>
+                </div>
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Quienes somos</span></a>
+                </div>
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Contactanos</span></a>
+                </div>
+                <!-- funcionalidades dependientes del tipo de usuario -->
+                {% if user.is_staff %}
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'agregar' %}"><span>Agregar producto</span></a>
+                </div>
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Generar informes</span></a>
+                </div>
+                {% endif %}
+                {% if grupo == 'vendedor' %}
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Gestionar ventas</span></a>
+                </div>
+                {% endif %}
+                {% if grupo == 'bodeguero' %}
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Inventario</span></a>
+                </div>
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Preparar de pedidos</span></a>
+                </div>
+                {% endif %}
+                {% if grupo == 'contador' %}
+                <div class="wrapper">
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Finanzas</span></a>
+                </div>
+                {% endif %}
+              
             </div>
             <div class="der">
                 <div class="dropNav p-1 ps-2 pe-2 m-1"><!-- SEARCH -->
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
-                        <button class="btn bi bi-search" type="submit" style="color: #014F98"></button>
+                        <button class="btn bi bi-search" type="submit" style="color: white"></button>
                     </form>
                 </div>
                 <div class="dropNav p-1 m-1"><!-- USER -->
                     <div class="dropdown">
                         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-fill" style="color: #014F98"></i>
+                            <i class="bi bi-person-fill" style="color: white"></i>
                         </button>
                         <ul class="dropdown-menu">
                           {% if user.is_authenticated %}
@@ -71,8 +82,8 @@
                 <div class="dropNav p-1 m-1"> <!-- CART -->
                     <div class="dropdown me-5">
                         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-cart-fill" style="color: #014F98"></i>
-                            <span class="" id="cartNumber" style="color: #014F98">0</span> <!-- Numero carrito -->
+                            <i class="bi bi-cart-fill" style="color: white"></i>
+                            <span class="" id="cartNumber" style="color: white">0</span> <!-- Numero carrito -->
                         </button>
                         <ul class="dropdown-menu">
                           <li><a class="dropdown-item" href="#">COMPRAR</a></li>

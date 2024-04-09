@@ -37,6 +37,14 @@
           "backdrop-filter"
         ]
       }
+    ],
+    "compat-api/html": [
+      "default",
+      {
+        "ignore": [
+          "input[autocapitalize]"
+        ]
+      }
     ]
   }
 }

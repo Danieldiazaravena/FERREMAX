@@ -29,6 +29,11 @@ def Login(request):
     return render(request,'login.html', context)
 
 
+def Woi(request):
+
+    return render(request, 'woi.html')
+
+
 # VISTA LANDING
 def Landing(request):
     if request.user.groups.filter(name="vendedor").exists():
@@ -40,13 +45,6 @@ def Landing(request):
     else:
         grupo = "cliente"
 
-<<<<<<< HEAD
-    return render(request, 'landing.html')
-
-def Woi(request):
-
-    return render(request, 'woi.html')
-=======
     context = {
         "grupo": grupo,
     }
@@ -74,9 +72,6 @@ def Register(request):
     else:
         grupo = "cliente"
 
-    context = {
-        "grupo": grupo,
-    }
 
     if request.method == "POST":
         form = FormularioRegistro(request.POST)
@@ -86,7 +81,8 @@ def Register(request):
             return redirect("landing")
     else:
         form = FormularioRegistro()
-    return render(request,'registration/register.html', {"form": form}, context)
+
+    return render(request, 'registration/register.html',{"form":form})
     
 #VISTA PARA AGREGAR NUEVOS PRODUCTOS
 @login_required
@@ -154,4 +150,3 @@ def Catalogo(request):
     }
 
     return render(request, 'catalogo.html', context)
->>>>>>> 756924f3d7b5b9b839217d0aa57fcf5fad41e17f

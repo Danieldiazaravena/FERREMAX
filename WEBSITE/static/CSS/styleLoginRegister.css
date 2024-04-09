@@ -1,6 +1,4 @@
-*{
-  overflow-y: hidden;
-}
+
 
 .logBase{
     background: #014F98;
@@ -60,10 +58,7 @@
     border-bottom: 5px solid white !important;
     transition: all .9s ease !important;
   }
-  
-  .logoBox{
-    overflow: hidden;
-  }
+
 
 .form-label{
     color: white;
