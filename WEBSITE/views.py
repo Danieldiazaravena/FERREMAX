@@ -6,13 +6,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import *
+from django.db.models import Q
 
 def Base(request):
 
-   return render(request,'base.html')
-
-# VISTA LOGIN
-def Login(request):
     if request.user.groups.filter(name="vendedor").exists():
         grupo = "vendedor"
     elif request.user.groups.filter(name="bodeguero").exists():
@@ -26,7 +23,12 @@ def Login(request):
         "grupo": grupo,
     }
 
-    return render(request,'login.html', context)
+    return render(request,'base.html', context)
+
+# VISTA LOGIN
+def Login(request):
+
+    return render(request,'login.html')
 
 
 def Woi(request):
@@ -36,20 +38,8 @@ def Woi(request):
 
 # VISTA LANDING
 def Landing(request):
-    if request.user.groups.filter(name="vendedor").exists():
-        grupo = "vendedor"
-    elif request.user.groups.filter(name="bodeguero").exists():
-        grupo = "bodeguero"
-    elif request.user.groups.filter(name="contador").exists():
-        grupo = "contador"
-    else:
-        grupo = "cliente"
 
-    context = {
-        "grupo": grupo,
-    }
-
-    return render(request, 'landing.html', context)
+    return render(request, 'landing.html')
 
 # formulario para registrarse
 class FormularioRegistro(UserCreationForm):
@@ -63,15 +53,6 @@ class FormularioRegistro(UserCreationForm):
         
 # VISTA REGISTRO
 def Register(request):
-    if request.user.groups.filter(name="vendedor").exists():
-        grupo = "vendedor"
-    elif request.user.groups.filter(name="bodeguero").exists():
-        grupo = "bodeguero"
-    elif request.user.groups.filter(name="contador").exists():
-        grupo = "contador"
-    else:
-        grupo = "cliente"
-
 
     if request.method == "POST":
         form = FormularioRegistro(request.POST)
@@ -131,22 +112,34 @@ def Agregar(request):
         return render(request, "agregar.html", context)
     
 def Catalogo(request):
-    if request.user.groups.filter(name="vendedor").exists():
-        grupo = "vendedor"
-    elif request.user.groups.filter(name="bodeguero").exists():
-        grupo = "bodeguero"
-    elif request.user.groups.filter(name="contador").exists():
-        grupo = "contador"
-    else:
-        grupo = "cliente"
 
-    productos = Producto.objects.select_related(
-                "id_categoria"
-                )
+    productos = Producto.objects.all()
+    marcas = Marca.objects.all()
+    categorias = Categoria.objects.all()
 
-    context = {
-        "grupo": grupo,
+    palabra_clave = request.GET.get('palabra_clave')
+    tipo_producto = request.GET.get('tipo_producto')
+    marca = request.GET.get('marca')
+    precio = request.GET.get('precio')
+    stock_disponible = request.GET.get('stock_disponible')
+
+    if palabra_clave:
+        productos = productos.filter(Q(nombre_producto__icontains=palabra_clave) | Q(descripcion__icontains=palabra_clave))
+    if tipo_producto:
+        productos = productos.filter(id_categoria=tipo_producto)
+    if marca:
+        productos = productos.filter(id_marca=marca)
+    if precio==1:
+        productos = productos.order_by('precio')
+    elif precio==2:
+        productos = productos.order_by('-precio')
+
+    context = {     
         "productos": productos,
+        "marcas": marcas,
+        "categorias" : categorias
     }
+
+    
 
     return render(request, 'catalogo.html', context)

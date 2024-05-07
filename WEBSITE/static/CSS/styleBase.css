@@ -11,11 +11,10 @@
 }
 
 .navbar{
-    transition: 0.6s;
     width: 100%;
-    border-bottom: 2px solid #014F98;
     background: #014F98;
 }
+
 .der{
     display: flex;
 }
@@ -45,7 +44,6 @@ a{
     border-radius: 25px;
 }
 
-
 .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
     border-color: white !important;
 }
@@ -53,7 +51,6 @@ a{
 .dropdown-toggle::after {
     color: white !important;
 }
-
 
 .form-control{
     border-radius: 30px;
