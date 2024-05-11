@@ -70,9 +70,14 @@
                   <h3 class="productPrice">{{producto.precio}}</h3>
                 </div>
                 <div class="productButtons">
-                  <a class="buy btn btn-lg" href="#">
-                    <span><i class="bi bi-bag-check-fill"></i> Comprar</span>
-                  </a>
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{producto.id_producto}}" name="id_producto">
+                    <input type="hidden" value="1" name="cantidad">
+                    <button class="buy btn btn-lg" type="submit" formaction="{% url 'AñadirCarritoCompra' %}">
+                      <span><i class="bi bi-bag-check-fill"></i> Comprar</span>
+                    </button>
+                  </form>
                   <a class="buy more btn btn-lg" href="#">
                     <span><i class="bi bi-plus-circle-fill"></i> Ver Mas</span>
                   </a>

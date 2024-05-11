@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -19,8 +20,13 @@ def Base(request):
     else:
         grupo = "cliente"
 
+    usuario = request.user
+    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    contador=Carrito_item.objects.filter(id_carrito=carrito).count()
+
     context = {
         "grupo": grupo,
+        "contador":contador
     }
 
     return render(request,'base.html', context)
@@ -39,7 +45,14 @@ def Woi(request):
 # VISTA LANDING
 def Landing(request):
 
-    return render(request, 'landing.html')
+    usuario = request.user
+    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    contador=Carrito_item.objects.filter(id_carrito=carrito).count()
+
+    context = {
+        "contador" : contador
+    }
+    return render(request, 'landing.html',context)
 
 # formulario para registrarse
 class FormularioRegistro(UserCreationForm):
@@ -112,6 +125,9 @@ def Agregar(request):
         return render(request, "agregar.html", context)
     
 def Catalogo(request):
+    usuario = request.user
+    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    contador=Carrito_item.objects.filter(id_carrito=carrito).count()
 
     productos = Producto.objects.all()
     marcas = Marca.objects.all()
@@ -137,9 +153,82 @@ def Catalogo(request):
     context = {     
         "productos": productos,
         "marcas": marcas,
-        "categorias" : categorias
-    }
-
-    
+        "categorias" : categorias,
+        "contador" : contador
+    }   
 
     return render(request, 'catalogo.html', context)
+
+@login_required
+def VerCarrito(request):
+
+    carro = Carrito.objects.filter(usuario=request.user,estado=False).first()
+    contCarrito=Carrito_item.objects.filter(id_carrito=carro)
+    contador=Carrito_item.objects.filter(id_carrito=carro).count()
+    subTotal= sum([item.cantidad* item.id_producto.precio for item in contCarrito])
+    total=subTotal+2500
+    context={
+        'contCarrito':contCarrito,
+        'subTotal':subTotal,
+        'total':total,
+        'carro':carro,
+        'contador':contador,
+    }
+
+    return render(request, 'carrito.html',context )
+
+@login_required
+def AñadirCarritoCompra(request):
+    if request.method == 'POST':
+        usuario=request.user.id
+        id_producto=request.POST['id_producto']
+        prod=Producto.objects.filter(id_producto=id_producto).first()
+        cantidad=request.POST['cantidad']
+        if Carrito.objects.filter(usuario=usuario,estado=False).first() == None:
+            Carrito.objects.create(usuario=usuario)
+
+        carrito = Carrito.objects.filter(usuario=usuario,estado=False).first()
+        if Carrito_item.objects.filter(id_carrito=carrito,id_producto=prod).first():
+            carrito_item=Carrito_item.objects.filter(id_carrito=carrito,id_producto=id_producto).first()
+            carrito_item.cantidad+=int(cantidad)
+            carrito_item.save()
+            messages.success(request,'Agregado correctamente')
+            return redirect('catalogo')
+        else:
+            Carrito_item.objects.create(id_carrito=carrito,id_producto=prod,cantidad=cantidad)
+            messages.success(request,'Agregado correctamente')
+            return redirect('catalogo')
+
+    return render(request,'catalogo.html') 
+
+@login_required
+def ActualizarCantidadCarrito(request):
+    if request.method=='POST':
+        usuario=request.user
+        car= request.POST.get('id_carrito')
+        cantidad= request.POST.get('cantidad')
+        prod = request.POST.get('id_producto')
+        carItem=Carrito_item.objects.filter(id_carrito=car,id_producto=prod).first()
+        carItem.cantidad=cantidad
+        carItem.save()
+        return redirect('VerCarrito')
+    return render(request,'mainCarrito.html')
+
+@login_required
+def QuitarCarritoCompra(request):
+    if request.method == 'POST':
+        usuario=request.user
+        carrito = Carrito.objects.filter(usuario=usuario,estado=False)
+        if request.POST.get('borrarUno'):
+            id_producto=request.POST['id_producto']
+            id_carrito=request.POST['id_carrito']
+            carrito_item = Carrito_item.objects.filter(id_carrito=id_carrito,id_producto=id_producto)
+            carrito_item.delete()
+            messages.success(request,'Eliminado correctamente')
+            return redirect('VerCarrito')        
+        elif request.POST.get('borrarTodo'):
+            carrito.delete()
+            Carrito.objects.create(estado=False,usuario=usuario)
+            messages.success(request,'Eliminado Correctamente')
+            return redirect('VerCarrito')
+    return render(request,'mainCarrito.html')

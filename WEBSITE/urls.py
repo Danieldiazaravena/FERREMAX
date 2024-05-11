@@ -10,5 +10,8 @@ urlpatterns = [
     path('',Landing,name='landing'),
     path('agregar/', Agregar, name='agregar'),
     path('catalogo/', Catalogo, name='catalogo'),
-
+    path('carrito/',VerCarrito,name='VerCarrito'),
+    path('carrito/add',AñadirCarritoCompra,name='AñadirCarritoCompra'),
+    path('carrito/upd',ActualizarCantidadCarrito, name="ActualizarCantidadCarrito"),
+    path('carrito/del',QuitarCarritoCompra,name='QuitarCarritoCompra')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

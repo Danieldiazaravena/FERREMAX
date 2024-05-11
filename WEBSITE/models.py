@@ -13,7 +13,7 @@ class Marca(models.Model):
     nombre_marca = models.CharField(max_length=45)
 
     def __str__(self):
-        return str(self.id_marca)
+        return str(self.nombre_marca)
 
     def get_(): #Para el default
         marcaDef=Marca.objects.get(id_marca=1)
@@ -95,3 +95,4 @@ class Carrito_item(models.Model):
     def sub_total(self):
         sub_total=self.cantidad * self.id_producto.precio
         return sub_total
+    
