@@ -180,7 +180,7 @@ def VerCarrito(request):
             "success": "http://localhost:8000/resultadopago/exito",
             "failure": "http://localhost:8000/resultadopago/fallo",
             "pending": "http://localhost:8000/resultadopago/pendiente"
-        },
+        }, 
         # En items va la informacion de los productos por lo que se está pagando sta información se saca desde la base de datos 
         "items": [
             {
