@@ -108,12 +108,18 @@
         <input type="hidden" value="{{carro.id_carrito}}" name="carro">
         <button class="btn btn-info btn-block btn-lg" type="submit" formaction="">
           <div class="d-flex justify-content-between">
-            <span>Pagar<i class="bi bi-bag-check-fill ms-2"></i></span>
+            <a href="{{ url }}">
+              <span>Pagar<i class="bi bi-bag-check-fill ms-2"></i></span>
+            </a>
           </div>
         </button>
         {% endif %}
       </form>
       </div>
+      <!-- Saqué una copia del botón para hacer pruebas -->
+      <a href="{{ url }}">
+        <span>Pagar<i class="bi bi-bag-check-fill ms-2"></i></span>
+      </a>
     </div>
   </div>
 </div>
