@@ -225,6 +225,25 @@ def Eliminar(request,pk):
         }
     return(redirect("list"))
 
+#SOLO PARA EL USUARIO VENDEDOR
+@login_required
+def Bodega(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
+    producto = Producto.objects.all().order_by('nombre_producto')
+    context = {
+        'grupo' : grupo,
+        'producto' : producto
+    }
+    return(render(request,'bodega.html',context,))
+
 #LISTADO DE PRODUCTOS 
 @login_required
 def List(request):
