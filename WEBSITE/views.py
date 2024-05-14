@@ -9,6 +9,12 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.db.models import Q
 
+# SDK de Mercado Pago (si da problemas, instalar con: pip install mercadopago)
+import mercadopago
+# Agrega credenciales
+sdk = mercadopago.SDK("TEST-937485966507246-051120-5327fec403daba4a078a7d4a79547a6a-1774376550")
+
+
 def Base(request):
 
     if request.user.groups.filter(name="vendedor").exists():
@@ -167,12 +173,43 @@ def VerCarrito(request):
     contador=Carrito_item.objects.filter(id_carrito=carro).count()
     subTotal= sum([item.cantidad* item.id_producto.precio for item in contCarrito])
     total=subTotal+2500
+
+    # Creación la preferencia, necesario para Mercado pago
+    preference_data = {
+        "back_urls": {
+            "success": "http://localhost:8000/resultadopago/exito",
+            "failure": "http://localhost:8000/resultadopago/fallo",
+            "pending": "http://localhost:8000/resultadopago/pendiente"
+        }, 
+        # En items va la informacion de los productos por lo que se está pagando sta información se saca desde la base de datos 
+        "items": [
+            {
+                "id": "1",
+                "title": "Producto prueba",
+                "description": "Descripcion prueba",
+                "quantity": 3,
+                "unit_price": 10000,
+                "currency_id": "CLP",
+            }
+        ],
+        # notification_url es para mostrar el resultado de la compra aunque el usuario no vuelva a la página despues de terminar el pago
+        # Para probar el notification_url se tiene que usar ngrok
+        # "notification_url": "http://localhost:8000/resultadopago/notificacion"
+    }
+
+    preference_response = sdk.preference().create(preference_data)
+    preference = preference_response["response"]
+    print(preference)
+
+
+
     context={
         'contCarrito':contCarrito,
         'subTotal':subTotal,
         'total':total,
         'carro':carro,
         'contador':contador,
+        'url': preference["init_point"],
     }
 
     return render(request, 'carrito.html',context )
@@ -232,3 +269,11 @@ def QuitarCarritoCompra(request):
             messages.success(request,'Eliminado Correctamente')
             return redirect('VerCarrito')
     return render(request,'mainCarrito.html')
+
+def ResultadoPago(request,rp):
+    context={
+        'rp':rp
+    }
+
+    return render(request, 'resultadopago.html',context)
+
