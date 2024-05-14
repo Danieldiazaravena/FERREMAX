@@ -6,7 +6,7 @@ class Categoria(models.Model):
     nombre_categoria = models.CharField(max_length=45)
 
     def __str__(self):
-        return str(self.nombre_categoria)
+        return str(self.nombre_categoria)   
 
 class Marca(models.Model):
     id_marca = models.AutoField(db_column="id_marca", primary_key=True)
@@ -15,10 +15,6 @@ class Marca(models.Model):
 
     def __str__(self):
         return str(self.nombre_marca)
-    
-    def get_(): #Para el default
-        marcaDef=Marca.objects.get(id_marca=1)
-        return marcaDef.id_marca
 
  #Producto
 class Producto(models.Model):
@@ -28,10 +24,10 @@ class Producto(models.Model):
     descripcion = models.CharField(max_length=400)
     cant_inventario = models.IntegerField(default=0)
     id_categoria = models.ForeignKey(
-        "Categoria", on_delete=models.CASCADE, db_column="id_categoria", default=1
+        "Categoria", on_delete=models.CASCADE, db_column="id_categoria"
     )
     id_marca = models.ForeignKey(
-        "Marca", on_delete=models.CASCADE, db_column="id_marca", default=Marca.get_
+        "Marca", on_delete=models.CASCADE, db_column="id_marca"
     )
 
     def __str__(self):
