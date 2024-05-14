@@ -11,10 +11,11 @@ class Categoria(models.Model):
 class Marca(models.Model):
     id_marca = models.AutoField(db_column="id_marca", primary_key=True)
     nombre_marca = models.CharField(max_length=45)
+    
 
     def __str__(self):
         return str(self.nombre_marca)
-
+    
     def get_(): #Para el default
         marcaDef=Marca.objects.get(id_marca=1)
         return marcaDef.id_marca
