@@ -81,7 +81,7 @@ class Pedido(models.Model):
 
 class Carrito(models.Model):
     id_carrito = models.AutoField(db_column='id_carrito',primary_key=True,default=None)
-    estado = models.BooleanField(default=False)
+    estado = models.IntegerField(default=0)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, db_column='usuario', null=True)
 
 class Carrito_item(models.Model):

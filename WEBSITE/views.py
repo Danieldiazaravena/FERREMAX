@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+import requests
 from .models import *
 from django.db.models import Q
 
@@ -103,18 +104,22 @@ def Agregar(request):
 
 
     cat = Categoria.objects.raw("select * from website_categoria")
+    marcas = Marca.objects.raw("select * from website_marca")
 
     if request.method == "POST":
         nombre_producto = request.POST["nombre"]
         precio = request.POST["precio"]
         descripcion = request.POST["descripción"]
         categoria = request.POST["categoria"]
+        marcaProd = request.POST["marca"]
         objCategoria = Categoria.objects.get(id_categoria=categoria)
+        objMarca = Marca.objects.get(id_marca=marcaProd)
         objProducto = Producto.objects.create(
             nombre_producto=nombre_producto,
             precio=precio,
             descripcion=descripcion,
             id_categoria=objCategoria,
+            id_marca=objMarca
         )
 
         imagen = request.FILES.get("imagen")
@@ -127,12 +132,14 @@ def Agregar(request):
             "mensaje": "Oferta publicada exitosamente",
             "grupo": grupo,
             "cat": cat,
+            "marca": marcas
             }
         return render(request, "agregar.html", context)
     else:
         context = {
             "grupo": grupo,
             "cat": cat,
+            "marca": marcas
             }
         return render(request, "agregar.html", context)
     
@@ -250,6 +257,10 @@ def List(request):
     }
     return(render(request,'list.html',context,))
 
+def get_productos():
+    url = 'http://localhost/api/api/get.php' 
+    r = requests.get(url)
+    return r.json()
 
 def Catalogo(request):
     usuario = request.user
@@ -264,7 +275,8 @@ def Catalogo(request):
     tipo_producto = request.GET.get('tipo_producto')
     marca = request.GET.get('marca')
     precio = request.GET.get('precio')
-    stock_disponible = request.GET.get('stock_disponible')
+    stock_disponible = get_productos()
+    stock=stock_disponible[0]
 
     if palabra_clave:
         productos = productos.filter(Q(nombre_producto__icontains=palabra_clave) | Q(descripcion__icontains=palabra_clave))
@@ -281,19 +293,39 @@ def Catalogo(request):
         "productos": productos,
         "marcas": marcas,
         "categorias" : categorias,
-        "contador" : contador
+        "contador" : contador,
+        "stock" : stock
     }   
 
     return render(request, 'catalogo.html', context)
 
 @login_required
 def VerCarrito(request):
-
+    usuario = request.user
+    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    carritoItems = Carrito_item.objects.filter(id_carrito = carrito)
     carro = Carrito.objects.filter(usuario=request.user,estado=False).first()
     contCarrito=Carrito_item.objects.filter(id_carrito=carro)
     contador=Carrito_item.objects.filter(id_carrito=carro).count()
     subTotal= sum([item.cantidad* item.id_producto.precio for item in contCarrito])
     total=subTotal+2500
+
+    item = [[9000,'precioenvio','envio',1,2500,"CLP"]]
+
+    for x in carritoItems:
+        item.append([x.id_producto.id_producto,x.id_producto.nombre_producto,x.id_producto.descripcion,x.cantidad,x.id_producto.precio,"CLP"])
+
+    items = []
+
+    for x in item:
+        items.append({
+            "id": x[0],  # El primer elemento de x es el ID del producto
+            "title": x[1],  # El segundo elemento de x es el nombre del producto
+            "description": x[2],  # El tercer elemento de x es la descripción del producto
+            "quantity": x[3],  # El cuarto elemento de x es la cantidad
+            "unit_price": x[4],  # El quinto elemento de x es el precio unitario
+            "currency_id": x[5]  # El sexto elemento de x es la moneda
+        })
 
     # Creación la preferencia, necesario para Mercado pago
     preference_data = {
@@ -303,16 +335,7 @@ def VerCarrito(request):
             "pending": "http://localhost:8000/resultadopago/pendiente"
         }, 
         # En items va la informacion de los productos por lo que se está pagando sta información se saca desde la base de datos 
-        "items": [
-            {
-                "id": "1",
-                "title": "Producto prueba",
-                "description": "Descripcion prueba",
-                "quantity": 3,
-                "unit_price": 10000,
-                "currency_id": "CLP",
-            }
-        ],
+        "items": items
         # notification_url es para mostrar el resultado de la compra aunque el usuario no vuelva a la página despues de terminar el pago
         # Para probar el notification_url se tiene que usar ngrok
         # "notification_url": "http://localhost:8000/resultadopago/notificacion"
@@ -338,12 +361,12 @@ def VerCarrito(request):
 @login_required
 def AñadirCarritoCompra(request):
     if request.method == 'POST':
-        usuario=request.user.id
+        usuario=request.user
         id_producto=request.POST['id_producto']
         prod=Producto.objects.filter(id_producto=id_producto).first()
         cantidad=request.POST['cantidad']
         if Carrito.objects.filter(usuario=usuario,estado=False).first() == None:
-            Carrito.objects.create(usuario=usuario)
+            Carrito.objects.create(usuario=usuario,estado=False)
 
         carrito = Carrito.objects.filter(usuario=usuario,estado=False).first()
         if Carrito_item.objects.filter(id_carrito=carrito,id_producto=prod).first():
@@ -395,6 +418,12 @@ def ResultadoPago(request,rp):
     context={
         'rp':rp
     }
+
+    usuario = request.user
+    carrito = Carrito.objects.filter(usuario=usuario,estado=False)
+
+    if rp == "exito":
+        carrito.estado=True
 
     return render(request, 'resultadopago.html',context)
 

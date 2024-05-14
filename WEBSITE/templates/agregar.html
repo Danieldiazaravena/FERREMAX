@@ -34,6 +34,13 @@
               <option value="{{categoria.id_categoria}}">{{categoria.nombre_categoria}}</option>
               {% endfor %}
             </select>
+            <br>
+            <select aria-label="Default select example" id="id_marca" name="marca" required class="form-select mb-1" >
+              <option selected disabled value="">Seleccione una marca</option>
+              {% for x in marca %}
+              <option value="{{x.id_marca}}">{{x.nombre_marca}}</option>
+              {% endfor %}
+            </select>
             <label for="Idimagen">Subir imagen :  </label>
             <input type="file" id="Idimagen" name="imagen" accept="image/png, image/jpeg, image/jpg, image/webp" required class="form-control">
       
