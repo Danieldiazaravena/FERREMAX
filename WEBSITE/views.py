@@ -51,6 +51,11 @@ def Woi(request):
 # VISTA LANDING
 def Landing(request):
 
+    if request.user.is_authenticated:
+        user_id = request.user.id
+    else:
+        # Manejar el caso del usuario no autenticado
+        return redirect('login')  # Redirige al usuario a la página de inicio de sesión
     usuario = request.user
     carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
@@ -117,6 +122,7 @@ def Agregar(request):
             imagen_producto=imagen,
             id_producto=objProducto
         )
+
         context = {
             "mensaje": "Oferta publicada exitosamente",
             "grupo": grupo,
@@ -130,6 +136,121 @@ def Agregar(request):
             }
         return render(request, "agregar.html", context)
     
+def Editar(request,pk):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
+
+    cat = Categoria.objects.raw("select * from website_categoria")
+
+    try:
+            producto = Producto.objects.get(id_producto=pk)
+            context = {
+            "mensaje": "Producto actualizado exitosamente",
+            "grupo": grupo,
+            "cat": cat,
+            "producto": producto,
+            }
+            return render(request, "editar.html", context)
+    except:
+            context = {
+            "mensaje": "Oferta no encontrada!",
+            "grupo": grupo,
+            "cat": cat,
+            }
+            return render(request, "list.html", context)
+
+def Updateproducto(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
+
+    cat = Categoria.objects.raw("select * from website_categoria")
+    if request.method == "POST":
+        id_producto = request.POST["id_producto"]
+        nombre_producto = request.POST["nombre"]
+        precio = request.POST["precio"]
+        descripcion = request.POST["descripción"]
+        categoria = request.POST["categoria"]
+        objCategoria = Categoria.objects.get(id_categoria=categoria)
+
+        objProducto = Producto()
+        objProducto.id_producto = id_producto
+        objProducto.nombre_producto = nombre_producto
+        objProducto.precio = precio
+        objProducto.descripcion = descripcion
+        objProducto.id_categoria = objCategoria
+
+        imagen = request.FILES.get("imagen")
+        Imagen_producto.objects.create(
+            imagen_producto=imagen,
+            id_producto=objProducto
+        )
+
+        context = {
+        'mensaje' : "Se guardaron los cambios hechos en la oferta",
+        "grupo": grupo,
+        }
+        return(render(request,'editar.html',context))
+    
+def Eliminar(request,pk):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
+    try:
+        producto = Producto.objects.get(id_producto=pk)
+        producto.delete()
+        mensaje = "Producto Eliminado Correctamente"
+        context = {
+            "mensaje": mensaje,
+            "grupo": grupo,
+        }
+    except:
+        mensaje = "Error, el producto no fue encontrado"
+        context = {
+            "mensaje": mensaje,
+            "grupo": grupo,
+        }
+    return(redirect("list"))
+
+#LISTADO DE PRODUCTOS 
+@login_required
+def List(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+        
+    producto = Producto.objects.all().order_by('nombre_producto')
+    context = {
+        'grupo' : grupo,
+        'producto' : producto
+    }
+    return(render(request,'list.html',context,))
+
+
 def Catalogo(request):
     usuario = request.user
     carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
