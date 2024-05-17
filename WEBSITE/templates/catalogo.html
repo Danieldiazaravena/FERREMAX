@@ -66,8 +66,7 @@
                 </div>
                 <div class="productDetail">
                   <h4 class="productName">{{ producto.nombre_producto }}</h4>
-                  <p class="productDescription">{{ producto.descripcion }}</p>
-                  <!-- <p class="productBrand">{{ producto.marca }}</p> -->
+                  <p class="productBrand">{{ producto.id_marca }}</p>
                   <h3 class="productPrice">{{producto.precio}}</h3>
                   <h3></h3>
                 </div>
@@ -80,7 +79,7 @@
                       <span><i class="bi bi-bag-check-fill"></i> Comprar</span>
                     </button>
                   </form>
-                  <a class="buy more btn btn-lg" href="#">
+                  <a class="buy more btn btn-lg" href="{% url 'Detalle' producto.id_producto %}">
                     <span><i class="bi bi-plus-circle-fill"></i> Ver Mas</span>
                   </a>
                 </div>
@@ -92,21 +91,6 @@
       </div>
     </div>
       
-  <script>
-    const formatter = new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency: 'CLP',
-
-  });
-
-  const prices = document.getElementsByClassName('productPrice');
-
-  for (let i = 0; i < prices.length; i++) {
-    const valor = parseFloat(prices[i].textContent);
-    const forteo = formatter.format(valor);
-    prices[i].textContent = forteo;
-  }
-  </script>
   
     
 

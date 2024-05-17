@@ -128,6 +128,22 @@
           <a class="text-dark" href="#">Ferremax.com</a>
         </div>
       </footer>
+
+      <script>
+        const formatter = new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+    
+      });
+    
+      const prices = document.getElementsByClassName('productPrice');
+    
+      for (let i = 0; i < prices.length; i++) {
+        const valor = parseFloat(prices[i].textContent);
+        const forteo = formatter.format(valor);
+        prices[i].textContent = forteo;
+      }
+      </script>
     <script src="{% static '/JS/script.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

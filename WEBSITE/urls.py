@@ -14,6 +14,7 @@ urlpatterns = [
     path('eliminar/<int:pk>', Eliminar, name='eliminar'),
     path('list/', List, name='list'),
     path('catalogo/', Catalogo, name='catalogo'),
+    path('catalogo/<int:id_producto>', Detalle, name='Detalle'),
     path('carrito/',VerCarrito,name='VerCarrito'),
     path('carrito/add',AñadirCarritoCompra,name='AñadirCarritoCompra'),
     path('carrito/upd',ActualizarCantidadCarrito, name="ActualizarCantidadCarrito"),

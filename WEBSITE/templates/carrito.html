@@ -44,7 +44,7 @@
                 <input class="fw-normal mb-0 form-control bg-light text-dark border-dark" type="number" value="{{obj.cantidad}}" id="cantidad-producto" name="cantidad">
               </div>
               <div> 
-                <h5 class="prices ms-2 me-2"> {{obj.sub_total}}</h5>
+                <h5 class="prices ms-2 me-2 productPrice"> {{obj.sub_total}}</h5>
               </div>
               <input class="btn btn-outline-danger" type="submit" name="borrarUno" value="Quitar" formaction="{% url 'QuitarCarritoCompra' %}">
             </form>
@@ -94,21 +94,21 @@
         <hr class="my-4">
         <div class="d-flex justify-content-between">
           <p class="mb-2">Subtotal</p>
-          <p class="mb-2 prices">{{subTotal}}</p>
+          <p class="mb-2 prices productPrice">{{subTotal}}</p>
         </div>
         <div class="d-flex justify-content-between">
           <p class="mb-2">Envío</p>
-          <p class="mb-2 prices">2500</p>
+          <p class="mb-2 prices productPrice">2500</p>
         </div>
         <div class="d-flex justify-content-between mb-4">
           <p class="mb-2">Total</p>
-          <p class="mb-2 prices">{{total}}</p>
+          <p class="mb-2 prices productPrice">{{total}}</p>
         </div>
         {% if subTotal > 0 %}
         <input type="hidden" value="{{carro.id_carrito}}" name="carro">
-        <button class="btn btn-info btn-block btn-lg" type="submit" formaction="">
+        <button class="btn btn-info btn-block btn-lg" type="submit" formaction="{{url}}">
           <div class="d-flex justify-content-between">
-            <a href="{{ url }}">
+            <a type="submit">
               <span>Pagar<i class="bi bi-bag-check-fill ms-2"></i></span>
             </a>
           </div>
@@ -116,25 +116,10 @@
         {% endif %}
       </form>
       </div>
-      <!-- Saqué una copia del botón para hacer pruebas -->
-      <a href="{{ url }}">
-        <span>Pagar<i class="bi bi-bag-check-fill ms-2"></i></span>
-      </a>
+
     </div>
   </div>
 </div>
 
-<script>
-    document.getElementById('cantidad-producto').addEventListener('change', function() {
-    });
-    const formatter = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' });
-    const priceElements = document.getElementsByClassName('prices');
-  
-    for (let i = 0; i < priceElements.length; i++) {
-      const valor = parseFloat(priceElements[i].textContent);
-      const formattedValor = formatter.format(valor);
-      priceElements[i].textContent = formattedValor;
-    }
-  </script>
 
 {% endblock %}

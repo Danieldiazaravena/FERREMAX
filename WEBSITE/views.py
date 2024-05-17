@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404 
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -427,3 +428,16 @@ def ResultadoPago(request,rp):
 
     return render(request, 'resultadopago.html',context)
 
+def Detalle(request,id_producto):
+    producto = get_object_or_404(Producto, id_producto=id_producto)
+    usuario = request.user
+    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    contador=Carrito_item.objects.filter(id_carrito=carrito).count()
+
+
+    context= {
+        'producto':producto,
+        'contador':contador
+    }
+
+    return render(request, 'detalle.html',context)
