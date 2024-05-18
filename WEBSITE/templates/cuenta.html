@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="/static/CSS/styleCuenta.css">
+{% endblock %}
+
+{% block container %}
+
+<div class="row d-flex justify-content-center align-items-center">
+    <div class="col-12 col-md-12 h-100 overflow-auto">
+      <div class="card" style="border-radius: 10px;">
+        <div class="card-header px-4 py-4">
+          <h5 class="text-muted mb-0">¡Muchas gracias por su preferencia!</h5>
+        </div>
+        {% for pedido in pedidos %}
+          <div class="card mt-3">
+            <div class="card-header pt-2">
+              <h5 class="text-muted">Pedido: ABC200567-{{pedido.id_pedido}}</h5>
+            </div>
+            <div class="card-body">
+              {% for item in items %}
+                {% if item.id_carrito == pedido.id_carrito %}
+                  <div class="row">
+                    <div class="col-md-3 pb-2">
+                      <img src="{{ item.id_producto.imagen_producto_set.first.imagen_producto.url }}" class="img-fluid rounded" style="height: 10vh; width: 8vw;" alt="Phone">
+                    </div>
+                    <div class="col-md-3 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0">{{ item.id_producto.nombre }}</p>
+                    </div>
+                    <div class="col-md-3 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0 small">Cantidad: {{item.cantidad}}</p>
+                    </div>
+                    <div class="col-md-3 text-center d-flex justify-content-center align-items-center">
+                      <p class="text-muted mb-0 small productPrice">{{item.sub_total}}</p>
+                    </div>
+                    <hr>
+                  </div>
+                {% endif %}
+              {% endfor %}
+              <div class="d-flex justify-content-between pt-2">
+                <p class="fw-bold mb-0">Detalle de su orden</p>
+                <div class="d-flex">
+                  <p class="me-2">Total:</p>
+                  <p class="text-muted mb-0 productPrice"> {{pedido.total}}</p>
+              </div>
+              </div>
+              <div class="d-flex justify-content-between pt-0">
+                <p class="text-muted mb-0">Numero de pedido: ABC200567-{{pedido.id_pedido}}</p>
+              </div>
+              <div class="d-flex justify-content-between">
+                <p class="text-muted mb-0">Fecha: {{pedido.fecha}}</p>
+                <p class="text-muted mb-0"><span class="fw-bold me-4"></span></p>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <p class="text-muted mb-0"></p>
+                <p class="text-muted mb-0"><span class="fw-bold me-4"></span> </p>
+              </div>
+              <div class="row d-flex align-items-center justify-content-center">
+                  <div class="col-md-10">
+                    <div class="progress" style="height: 6px; border-radius: 16px;">
+                      {% if pedido.id_envio.nombre == 'Pendiente' %}
+                      <div class="progress-bar" role="progressbar" style="width: 15%; border-radius: 16px; background-color:  #014F98;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                      {% elif pedido.id_envio.nombre == 'En Despacho' %}
+                      <div class="progress-bar" role="progressbar" style="width: 65%; border-radius: 16px; background-color:  #014F98;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                      {% elif pedido.id_envio.nombre == 'Entregado' %}
+                      <div class="progress-bar" role="progressbar" style="width: 100%; border-radius: 16px; background-color:  #014F98;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                      {% endif %}
+                  </div>
+                    <div class="d-flex justify-content-around mb-1">
+                      <p class="text-muted mb-0 small">Preparando su pedido</p>
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5">Su pedido esta en despacho</p>
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5">Pedido entregado</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="card-footer border-0 px-3 py-2"
+              style="background-color: #014F98; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

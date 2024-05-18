@@ -122,3 +122,9 @@
 .categorias .row .col-3 h5{
   color: white;
 }
+
+.message{
+  height: 70vh;
+  display: flex;
+  align-items: center;
+}

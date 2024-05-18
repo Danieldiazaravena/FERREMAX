@@ -1,0 +1,66 @@
+.quienesSomos{
+    height: 90vh;
+}
+
+.imgLogo{
+    background-image: url("../IMG/layered-peaks-haikei.svg");
+    background-position: bottom;
+    background-size: cover;
+    overflow: visible;
+}
+
+.logo img{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.logo{
+    text-align: center;
+}
+
+@-webkit-keyframes fade-in-left {
+    0% {
+      -webkit-transform: translateX(-50px);
+              transform: translateX(-50px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  @keyframes fade-in-left {
+    0% {
+      -webkit-transform: translateX(-50px);
+              transform: translateX(-50px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+.fade-in-left {
+	-webkit-animation: fade-in-left 2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	animation: fade-in-left 2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.items{
+    background-color: #fff;
+    margin: 1rem;
+    border-radius: 25px;
+}
+
+.items i{
+    font-size: 3rem;
+    text-transform: capitalize;
+    font-weight: 700;
+    position: relative;
+    color: black;
+    margin: 1rem 0;
+    text-decoration: solid dashed;
+}

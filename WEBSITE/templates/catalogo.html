@@ -6,8 +6,6 @@
 
 {% block container %}
 
-{{stock.stock_bodega}}
-
   <div class="container ps-5 pe-5">
 
     <div class="row mt-5 catalogRow">
@@ -75,9 +73,16 @@
                     {% csrf_token %}
                     <input type="hidden" value="{{producto.id_producto}}" name="id_producto">
                     <input type="hidden" value="1" name="cantidad">
-                    <button class="buy btn btn-lg" type="submit" formaction="{% url 'AñadirCarritoCompra' %}">
-                      <span><i class="bi bi-bag-check-fill"></i> Comprar</span>
+                    {% if producto.cant_inventario == 0 %}
+                    <button class="buy btn btn-lg">
+                      <span><i class="bi bi-bag-x-fill"></i> Sin Stock</span>
                     </button>
+                    {% else %}
+                      <button class="buy btn btn-lg" type="submit" formaction="{% url 'AñadirCarritoCompra' %}">
+                        <span><i class="bi bi-bag-check-fill"></i> Comprar</span>
+                      </button>
+                    {% endif %}
+                    
                   </form>
                   <a class="buy more btn btn-lg" href="{% url 'Detalle' producto.id_producto %}">
                     <span><i class="bi bi-plus-circle-fill"></i> Ver Mas</span>

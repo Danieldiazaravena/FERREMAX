@@ -24,7 +24,7 @@
                     <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'catalogo' %}"><span>Catálogo</span></a>
                 </div>
                 <div class="wrapper">
-                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Quienes somos</span></a>
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'quienesSomos' %}"><span>Quienes somos</span></a>
                 </div>
                 <div class="wrapper">
                     <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Contactanos</span></a>
@@ -36,9 +36,6 @@
                 </div>
                 <div class="wrapper">
                     <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'list' %}"><span>Productos disponibles</span></a>
-                </div>
-                <div class="wrapper">
-                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Generar informes</span></a>
                 </div>
                 {% endif %}
                 {% if grupo == 'vendedor' %}
@@ -75,7 +72,7 @@
                         <ul class="dropdown-menu">
                           {% if user.is_authenticated %}
                           <li><a class="dropdown-item" href="{% url 'logout' %}" style="text-transform: capitalize; text-align: center;" >Hola {{request.user}}!</a></li>
-                          <li><a class="dropdown-item" href="">Mi Cuenta</a></li>
+                          <li><a class="dropdown-item" href="{% url 'Cuenta' %}">Mi Cuenta</a></li>
                           <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                           {% else %}
                           <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>

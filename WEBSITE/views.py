@@ -28,13 +28,8 @@ def Base(request):
     else:
         grupo = "cliente"
 
-    usuario = request.user
-    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
-    contador=Carrito_item.objects.filter(id_carrito=carrito).count()
-
     context = {
         "grupo": grupo,
-        "contador":contador
     }
 
     return render(request,'base.html', context)
@@ -59,7 +54,7 @@ def Landing(request):
         # Manejar el caso del usuario no autenticado
         return redirect('login')  # Redirige al usuario a la página de inicio de sesión
     usuario = request.user
-    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    carrito = Carrito.objects.filter(estado=0,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
 
     context = {
@@ -265,7 +260,7 @@ def get_productos():
 
 def Catalogo(request):
     usuario = request.user
-    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    carrito = Carrito.objects.filter(estado=0,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
 
     productos = Producto.objects.all()
@@ -303,7 +298,7 @@ def Catalogo(request):
 @login_required
 def VerCarrito(request):
     usuario = request.user
-    carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
+    carrito = Carrito.objects.filter(estado=0,usuario=usuario).first()
     carritoItems = Carrito_item.objects.filter(id_carrito = carrito)
     carro = Carrito.objects.filter(usuario=request.user,estado=False).first()
     contCarrito=Carrito_item.objects.filter(id_carrito=carro)
@@ -417,15 +412,18 @@ def QuitarCarritoCompra(request):
 
 def ResultadoPago(request,rp):
     context={
-        'rp':rp
+        'rp':rp,
+
     }
 
     usuario = request.user
-    carrito = Carrito.objects.filter(usuario=usuario,estado=False)
+    carritoAntiguo = Carrito.objects.filter(usuario=usuario,estado=0).first()
 
     if rp == "exito":
-        carrito.estado=True
-
+        carritoAntiguo.estado=1
+        carritoAntiguo.save()
+        Carrito.objects.create(estado=0,usuario=usuario)
+        Pedido.objects.create(id_carrito=carroAntiguo,usuario=usuario,id_envio=estados)
     return render(request, 'resultadopago.html',context)
 
 def Detalle(request,id_producto):
@@ -441,3 +439,20 @@ def Detalle(request,id_producto):
     }
 
     return render(request, 'detalle.html',context)
+
+def quienesSomos(request):
+
+    return render(request,'quienesSomos.html')
+
+def Cuenta(request):
+    usuario = request.user
+    pedidos = Pedido.objects.filter(usuario=usuario)
+    carritos = Carrito.objects.filter(usuario=usuario,estado=1)
+    items = Carrito_item.objects.all()
+    context = {
+        'pedidos':pedidos,
+        'carritos':carritos,
+        'items':items
+    }
+
+    return render(request,'cuenta.html',context)
