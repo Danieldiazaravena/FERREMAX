@@ -129,6 +129,22 @@ def Agregar(request):
             id_producto=objProducto
         )
 
+        #Creación del diccionario para enviar los datos a la API
+        datos_api = {
+                "id_producto": None,
+                "nombre_producto": nombre_producto,
+                "precio": precio,
+                "descripcion": descripcion,
+                "stock_bodega": 50,  # Inicialmente todo producto nuevo creado comienza con 50 stock en bodega
+                "id_marca": marcaProd,
+                "id_categoria": categoria
+            }
+
+        #Envío de los datos a la API
+        requests.post('http://localhost/api/api/post.php?', json=datos_api)
+
+
+
         context = {
             "mensaje": "Oferta publicada exitosamente",
             "grupo": grupo,
