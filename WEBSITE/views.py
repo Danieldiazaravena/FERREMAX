@@ -468,11 +468,13 @@ def Detalle(request,id_producto):
     usuario = request.user
     carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
+    stock = requests.get('http://localhost/api/api/get_one.php', json={"id_producto": id_producto}).json().get('stock_bodega')
 
 
     context= {
         'producto':producto,
-        'contador':contador
+        'contador':contador,
+        'stock':stock
     }
 
     return render(request, 'detalle.html',context)
