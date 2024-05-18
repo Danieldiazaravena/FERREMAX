@@ -15,7 +15,8 @@ from django.db.models import Q
 import mercadopago
 # Agrega credenciales
 sdk = mercadopago.SDK("TEST-937485966507246-051120-5327fec403daba4a078a7d4a79547a6a-1774376550")
-
+# Nombre de usuario comprador de prueba: TESTUSER518394180
+# Contraseña: cCnwPtzVxv
 
 def Base(request):
 
@@ -123,6 +124,22 @@ def Agregar(request):
             imagen_producto=imagen,
             id_producto=objProducto
         )
+
+        #Creación del diccionario para enviar los datos a la API
+        datos_api = {
+                "id_producto": None,
+                "nombre_producto": nombre_producto,
+                "precio": precio,
+                "descripcion": descripcion,
+                "stock_bodega": 50,  # Inicialmente todo producto nuevo creado comienza con 50 stock en bodega
+                "id_marca": marcaProd,
+                "id_categoria": categoria
+            }
+
+        #Envío de los datos a la API
+        requests.post('http://localhost/api/api/post.php?', json=datos_api)
+
+
 
         context = {
             "mensaje": "Oferta publicada exitosamente",
@@ -234,6 +251,25 @@ def Eliminar(request,pk):
         }
     return(redirect("list"))
 
+#SOLO PARA EL USUARIO VENDEDOR
+@login_required
+def Bodega(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
+    producto = Producto.objects.all().order_by('nombre_producto')
+    context = {
+        'grupo' : grupo,
+        'producto' : producto
+    }
+    return(render(request,'bodega.html',context,))
+
 #LISTADO DE PRODUCTOS 
 @login_required
 def List(request):
@@ -309,8 +345,14 @@ def VerCarrito(request):
     item = [[9000,'precioenvio','envio',1,2500,"CLP"]]
 
     for x in carritoItems:
-        item.append([x.id_producto.id_producto,x.id_producto.nombre_producto,x.id_producto.descripcion,x.cantidad,x.id_producto.precio,"CLP"])
-
+        item.append([
+            x.id_producto.id_producto,
+            x.id_producto.nombre_producto,
+            x.id_producto.descripcion,
+            x.cantidad,
+            x.id_producto.precio,
+            "CLP"
+        ])
     items = []
 
     for x in item:
@@ -415,15 +457,33 @@ def ResultadoPago(request,rp):
         'rp':rp,
 
     }
-
     usuario = request.user
     carritoAntiguo = Carrito.objects.filter(usuario=usuario,estado=0).first()
+
+    carro = Carrito.objects.filter(usuario=request.user,estado=False).first()
+    contCarrito=Carrito_item.objects.filter(id_carrito=carro)
 
     if rp == "exito":
         carritoAntiguo.estado=1
         carritoAntiguo.save()
         Carrito.objects.create(estado=0,usuario=usuario)
         Pedido.objects.create(id_carrito=carroAntiguo,usuario=usuario,id_envio=estados)
+        for producto in contCarrito:
+            # Se obtiene el stock actal del producto en la API
+            stock = requests.get('http://localhost/api/api/get_one.php', json={"id_producto": producto.id_producto.id_producto}).json().get('stock_bodega')
+            # Se le resta al stock actual la cantidad de productos comprados
+            stock = stock - producto.cantidad
+            # se actualiza el stock en la API
+            requests.put('http://localhost/api/api/put.php',
+                          json={
+                            "id_producto": producto.id_producto.id_producto,
+                            "nombre_producto": producto.id_producto.nombre_producto,
+                            "precio": producto.id_producto.precio,
+                            "descripcion": producto.id_producto.descripcion,
+                            "stock_bodega": stock,
+                            "id_marca": producto.id_producto.id_marca.id_marca,
+                            "id_categoria": producto.id_producto.id_categoria.id_categoria
+                            })
     return render(request, 'resultadopago.html',context)
 
 def Detalle(request,id_producto):
@@ -431,11 +491,13 @@ def Detalle(request,id_producto):
     usuario = request.user
     carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
+    stock = requests.get('http://localhost/api/api/get_one.php', json={"id_producto": id_producto}).json().get('stock_bodega')
 
 
     context= {
         'producto':producto,
-        'contador':contador
+        'contador':contador,
+        'stock':stock
     }
 
     return render(request, 'detalle.html',context)

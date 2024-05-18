@@ -25,14 +25,14 @@
               <p>{{producto.descripcion}}</p>
               <ul>
                 <li><i class="bi bi-check-circle-fill"></i>Marca: <span>{{producto.id_marca}}</span></li>
-                <li><i class="bi bi-check-circle-fill"></i>Disponible: <span>{{producto.cant_inventario}}</span></li><!-- CAMBIAR CON API -->
+                <li><i class="bi bi-check-circle-fill"></i>Disponible: <span>{{stock}}</span></li>
                 <li><i class="bi bi-check-circle-fill"></i>Categoria: <span>{{producto.id_categoria}}</span></li>
                 <li><i class="bi bi-check-circle-fill"></i>Garantia: <span>1 año</span></li>
               </ul>
             </div>
   
             <div class = "purchase-info">
-                {% if producto.cant_inventario == 0%}
+                {% if stock == 0 %}
                     <h5 class="no-stock">Producto sin stock!</h5>
                     <a href="{% url 'catalogo' %}" class = "more buy btn btn-lg text-white align-items-center "><i class="bi bi-arrow-left-circle-fill"></i> Volver</a>
                 {% else %}

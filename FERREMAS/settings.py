@@ -80,7 +80,8 @@ DATABASES = {
         'NAME': 'db_ferremax',
         'USER': 'root',
         'HOST': 'localhost',
-        'PORT': '3308',
+        'PORT': '3306',
+        'PASSWORD': 'root',
     }
 }
 
