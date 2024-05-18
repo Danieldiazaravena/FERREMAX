@@ -15,7 +15,8 @@ from django.db.models import Q
 import mercadopago
 # Agrega credenciales
 sdk = mercadopago.SDK("TEST-937485966507246-051120-5327fec403daba4a078a7d4a79547a6a-1774376550")
-
+# Nombre de usuario comprador de prueba: TESTUSER518394180
+# Contraseña: cCnwPtzVxv
 
 def Base(request):
 
@@ -349,8 +350,14 @@ def VerCarrito(request):
     item = [[9000,'precioenvio','envio',1,2500,"CLP"]]
 
     for x in carritoItems:
-        item.append([x.id_producto.id_producto,x.id_producto.nombre_producto,x.id_producto.descripcion,x.cantidad,x.id_producto.precio,"CLP"])
-
+        item.append([
+            x.id_producto.id_producto,
+            x.id_producto.nombre_producto,
+            x.id_producto.descripcion,
+            x.cantidad,
+            x.id_producto.precio,
+            "CLP"
+        ])
     items = []
 
     for x in item:
@@ -455,11 +462,27 @@ def ResultadoPago(request,rp):
         'rp':rp
     }
 
-    usuario = request.user
-    carrito = Carrito.objects.filter(usuario=usuario,estado=False)
+    carro = Carrito.objects.filter(usuario=request.user,estado=False).first()
+    contCarrito=Carrito_item.objects.filter(id_carrito=carro)
 
     if rp == "exito":
-        carrito.estado=True
+        for producto in contCarrito:
+            # Se obtiene el stock actal del producto en la API
+            stock = requests.get('http://localhost/api/api/get_one.php', json={"id_producto": producto.id_producto.id_producto}).json().get('stock_bodega')
+            # Se le resta al stock actual la cantidad de productos comprados
+            stock = stock - producto.cantidad
+            # se actualiza el stock en la API
+            requests.put('http://localhost/api/api/put.php',
+                          json={
+                            "id_producto": producto.id_producto.id_producto,
+                            "nombre_producto": producto.id_producto.nombre_producto,
+                            "precio": producto.id_producto.precio,
+                            "descripcion": producto.id_producto.descripcion,
+                            "stock_bodega": stock,
+                            "id_marca": producto.id_producto.id_marca.id_marca,
+                            "id_categoria": producto.id_producto.id_categoria.id_categoria
+                            })
+        carro.estado=True
 
     return render(request, 'resultadopago.html',context)
 

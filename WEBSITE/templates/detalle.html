@@ -32,7 +32,7 @@
             </div>
   
             <div class = "purchase-info">
-                {% if producto.cant_inventario == 0%}
+                {% if stock == 0 %}
                     <h5 class="no-stock">Producto sin stock!</h5>
                     <a href="{% url 'catalogo' %}" class = "more buy btn btn-lg text-white align-items-center "><i class="bi bi-arrow-left-circle-fill"></i> Volver</a>
                 {% else %}
