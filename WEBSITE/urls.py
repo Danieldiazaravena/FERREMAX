@@ -23,4 +23,5 @@ urlpatterns = [
     path('resultadopago/<str:rp>',ResultadoPago,name='Resultadopago'),
     path('quienesSomos/',quienesSomos,name="quienesSomos"),
     path('cuenta/',Cuenta,name="Cuenta"),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

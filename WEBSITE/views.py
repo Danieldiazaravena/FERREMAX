@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 import requests
 from .models import *
 from django.db.models import Q
+from .utils import get_dollar_value
+
+
 
 # SDK de Mercado Pago (si da problemas, instalar con: pip install mercadopago)
 import mercadopago
@@ -299,6 +302,14 @@ def Catalogo(request):
     carrito = Carrito.objects.filter(estado=0,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
 
+    #obtener valor del dolar del día
+    try:
+        dollar_value = get_dollar_value()
+    except Exception as e:
+        dollar_value = None
+
+
+
     productos = Producto.objects.all()
     marcas = Marca.objects.all()
     categorias = Categoria.objects.all()
@@ -321,12 +332,23 @@ def Catalogo(request):
     elif precio==2:
         productos = productos.order_by('-precio')
 
+    # Calcular el precio en dólares de cada producto
+    for producto in productos:
+        if dollar_value:
+            precio_en_dolares = round(producto.precio / dollar_value , 2)
+            producto.precio_en_dolares = precio_en_dolares
+        else:
+            producto.precio_en_dolares = None
+
+
     context = {     
         "productos": productos,
         "marcas": marcas,
         "categorias" : categorias,
         "contador" : contador,
-        "stock" : stock
+        "stock" : stock,
+        "dollar_value": dollar_value
+
     }   
 
     return render(request, 'catalogo.html', context)
@@ -518,3 +540,8 @@ def Cuenta(request):
     }
 
     return render(request,'cuenta.html',context)
+
+
+
+
+
