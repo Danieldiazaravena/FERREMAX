@@ -93,3 +93,12 @@ class Carrito_item(models.Model):
         sub_total=self.cantidad * self.id_producto.precio
         return sub_total
     
+class Direccion(models.Model):
+    id_direccion = models.AutoField(db_column='id_direccion',primary_key=True,default=None)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, db_column='usuario', null=True)
+    calle = models.CharField(max_length=200, null=False)
+    numeracion = models.IntegerField(null=False, blank=False, default=None)
+    comuna = models.CharField(max_length=100, null=False, default=None)
+    region = models.CharField(max_length=100, null=False, default=None)
+    def __str__(self):
+        return self.calle

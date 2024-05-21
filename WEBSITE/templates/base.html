@@ -27,7 +27,7 @@
                     <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'quienesSomos' %}"><span>Quienes somos</span></a>
                 </div>
                 <div class="wrapper">
-                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Contactanos</span></a>
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'contacto' %}"><span>Contactanos</span></a>
                 </div>
                 <!-- funcionalidades dependientes del tipo de usuario -->
                 {% if user.is_staff %}
@@ -48,7 +48,7 @@
                     <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Inventario</span></a>
                 </div>
                 <div class="wrapper">
-                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Preparar de pedidos</span></a>
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'prepararPedido' %}"><span>Preparar de pedidos</span></a>
                 </div>
                 {% endif %}
                 {% if grupo == 'contador' %}
@@ -71,8 +71,8 @@
                         </button>
                         <ul class="dropdown-menu">
                           {% if user.is_authenticated %}
-                          <li><a class="dropdown-item" href="{% url 'logout' %}" style="text-transform: capitalize; text-align: center;" >Hola {{request.user}}!</a></li>
-                          <li><a class="dropdown-item" href="{% url 'Cuenta' %}">Mi Cuenta</a></li>
+                          <li><a class="dropdown-item" href="{% url 'logout' %}" style="text-transform: capitalize; text-align: center; background-color:#F23A2F ; color: #fff;" >Hola {{request.user}}!</a></li>
+                          <li><a class="dropdown-item" href="{% url 'Cuenta' %}">Mis Pedidos</a></li>
                           <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                           {% else %}
                           <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>

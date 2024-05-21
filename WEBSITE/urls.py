@@ -22,6 +22,8 @@ urlpatterns = [
     path('carrito/del',QuitarCarritoCompra,name='QuitarCarritoCompra'),
     path('resultadopago/<str:rp>',ResultadoPago,name='Resultadopago'),
     path('quienesSomos/',quienesSomos,name="quienesSomos"),
+    path('contacto/',contacto,name="contacto"),
     path('cuenta/',Cuenta,name="Cuenta"),
+    path('preprarPedido/',prepararPedido,name="prepararPedido"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

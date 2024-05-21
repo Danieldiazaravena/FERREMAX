@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+import django_filters 
+from django_filters import DateFilter
 from django.shortcuts import get_object_or_404 
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
@@ -11,8 +13,6 @@ import requests
 from .models import *
 from django.db.models import Q
 from .utils import get_dollar_value
-
-
 
 # SDK de Mercado Pago (si da problemas, instalar con: pip install mercadopago)
 import mercadopago
@@ -43,14 +43,32 @@ def Login(request):
 
     return render(request,'login.html')
 
-
 def Woi(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
 
-    return render(request, 'woi.html')
-
+    context = {
+        "grupo":grupo
+    }
+    return render(request, 'woi.html',context)
 
 # VISTA LANDING
 def Landing(request):
+
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
 
     if request.user.is_authenticated:
         user_id = request.user.id
@@ -62,7 +80,8 @@ def Landing(request):
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
 
     context = {
-        "contador" : contador
+        "contador" : contador,
+        "grupo":grupo
     }
     return render(request, 'landing.html',context)
 
@@ -84,6 +103,7 @@ def Register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            Carrito.objects.create(usuario=user,estado=0)
             return redirect("landing")
     else:
         form = FormularioRegistro()
@@ -136,7 +156,8 @@ def Agregar(request):
                 "descripcion": descripcion,
                 "stock_bodega": 50,  # Inicialmente todo producto nuevo creado comienza con 50 stock en bodega
                 "id_marca": marcaProd,
-                "id_categoria": categoria
+                "id_categoria": categoria,
+                "grupo":grupo
             }
 
         #Envío de los datos a la API
@@ -302,13 +323,24 @@ def Catalogo(request):
     carrito = Carrito.objects.filter(estado=0,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
 
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
     #obtener valor del dolar del día
     try:
         dollar_value = get_dollar_value()
     except Exception as e:
         dollar_value = None
 
-
+    response = requests.get('http://localhost/api/api/get.php')
+    product_data = response.json()
+    api_product_data = {item['id_producto']: item for item in product_data}
 
     productos = Producto.objects.all()
     marcas = Marca.objects.all()
@@ -340,6 +372,9 @@ def Catalogo(request):
         else:
             producto.precio_en_dolares = None
 
+        api_data = api_product_data.get(producto.id_producto)
+        producto.stock_bodega = api_data['stock_bodega'] if api_data else 0
+
 
     context = {     
         "productos": productos,
@@ -347,14 +382,23 @@ def Catalogo(request):
         "categorias" : categorias,
         "contador" : contador,
         "stock" : stock,
-        "dollar_value": dollar_value
-
+        "dollar_value": dollar_value,
+        "grupo":grupo
     }   
 
     return render(request, 'catalogo.html', context)
 
 @login_required
 def VerCarrito(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
     usuario = request.user
     carrito = Carrito.objects.filter(estado=0,usuario=usuario).first()
     carritoItems = Carrito_item.objects.filter(id_carrito = carrito)
@@ -405,7 +449,18 @@ def VerCarrito(request):
     preference = preference_response["response"]
     print(preference)
 
-
+    if request.method == 'POST':
+        usuario = request.user
+        calle = request.POST.get('calle')
+        numeracion = request.POST.get('numeracion')
+        comuna = request.POST.get('comuna')
+        region = request.POST.get('region')
+        if Direccion.objects.filter(usuario=request.user) == None:
+            Direccion.objects.create(calle=calle,
+                                 comuna=comuna,
+                                 numeracion=numeracion,
+                                 region=region,
+                                 usuario=usuario) 
 
     context={
         'contCarrito':contCarrito,
@@ -414,6 +469,7 @@ def VerCarrito(request):
         'carro':carro,
         'contador':contador,
         'url': preference["init_point"],
+        "grupo":grupo
     }
 
     return render(request, 'carrito.html',context )
@@ -481,6 +537,7 @@ def ResultadoPago(request,rp):
     }
     usuario = request.user
     carritoAntiguo = Carrito.objects.filter(usuario=usuario,estado=0).first()
+    estados=Estado.objects.get(nombre='Pendiente')
 
     carro = Carrito.objects.filter(usuario=request.user,estado=False).first()
     contCarrito=Carrito_item.objects.filter(id_carrito=carro)
@@ -489,7 +546,7 @@ def ResultadoPago(request,rp):
         carritoAntiguo.estado=1
         carritoAntiguo.save()
         Carrito.objects.create(estado=0,usuario=usuario)
-        Pedido.objects.create(id_carrito=carroAntiguo,usuario=usuario,id_envio=estados)
+        Pedido.objects.create(id_carrito=carritoAntiguo,usuario=usuario,id_envio=estados)
         for producto in contCarrito:
             # Se obtiene el stock actal del producto en la API
             stock = requests.get('http://localhost/api/api/get_one.php', json={"id_producto": producto.id_producto.id_producto}).json().get('stock_bodega')
@@ -514,21 +571,50 @@ def Detalle(request,id_producto):
     carrito = Carrito.objects.filter(estado=False,usuario=usuario).first()
     contador=Carrito_item.objects.filter(id_carrito=carrito).count()
     stock = requests.get('http://localhost/api/api/get_one.php', json={"id_producto": id_producto}).json().get('stock_bodega')
+    try:
+        dollar_value = get_dollar_value()
+    except Exception as e:
+        dollar_value = None
 
+    if dollar_value:
+        precio_en_dolares = round(producto.precio / dollar_value , 2)
+        producto.precio_en_dolares = precio_en_dolares
+    else:
+        producto.precio_en_dolares = None
 
     context= {
         'producto':producto,
         'contador':contador,
-        'stock':stock
+        'stock':stock,
+        "dollar_value":dollar_value
     }
 
     return render(request, 'detalle.html',context)
 
 def quienesSomos(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
 
-    return render(request,'quienesSomos.html')
+    context ={
+        "grupo":grupo
+    }
+    return render(request,'quienesSomos.html',context)
 
 def Cuenta(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
     usuario = request.user
     pedidos = Pedido.objects.filter(usuario=usuario)
     carritos = Carrito.objects.filter(usuario=usuario,estado=1)
@@ -536,12 +622,64 @@ def Cuenta(request):
     context = {
         'pedidos':pedidos,
         'carritos':carritos,
-        'items':items
+        'items':items,
+        "grupo":grupo
     }
 
     return render(request,'cuenta.html',context)
 
+def contacto(request):
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
 
+    context ={
+        "grupo":grupo
+    }
+    return render(request,'contacto.html',context)  
 
+class PedidoFiltro(django_filters.FilterSet): 
 
+    class Meta:
+        model = Pedido
+        fields = ['usuario','fecha','id_envio']
+
+def prepararPedido(request):
+
+    if request.user.groups.filter(name="vendedor").exists():
+        grupo = "vendedor"
+    elif request.user.groups.filter(name="bodeguero").exists():
+        grupo = "bodeguero"
+    elif request.user.groups.filter(name="contador").exists():
+        grupo = "contador"
+    else:
+        grupo = "cliente"
+
+    pedidos = Pedido.objects.all()
+    carro = Carrito.objects.filter(usuario=request.user,estado=False).first()
+    contador=Carrito_item.objects.filter(id_carrito=carro).count()
+    filtro = PedidoFiltro(request.GET, queryset=pedidos)
+    pedidos = filtro.qs
+    estados = Estado.objects.all()
+    direcciones = Direccion.objects.all()
+
+    if request.method == 'POST'  :
+        estado_op = request.POST.get('estadoOp')
+        estado = Estado.objects.get(nombre=estado_op)
+        Pedido.objects.filter(id_pedido=request.POST.get('idpedido')).update(id_envio=estado)
+
+    context = {
+        'pedidos':pedidos,
+        'contador':contador,
+        'filtro':filtro,
+        'estados':estados,
+        'direcciones':direcciones,
+        "grupo":grupo
+    }
+    return render(request,'prepararPedido.html',context)  
 

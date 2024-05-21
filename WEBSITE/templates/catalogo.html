@@ -66,7 +66,7 @@
                   <h4 class="productName">{{ producto.nombre_producto }}</h4>
                   <p class="productBrand">{{ producto.id_marca }}</p>
                   <h3 class="productPrice">{{producto.precio}}</h3>
-                  <h6>${{ producto.precio_en_dolares}} USD</h6>
+                  <p>${{ producto.precio_en_dolares}} USD</p>
                   <h3></h3>
                 </div>
                 <div class="productButtons">
@@ -74,7 +74,8 @@
                     {% csrf_token %}
                     <input type="hidden" value="{{producto.id_producto}}" name="id_producto">
                     <input type="hidden" value="1" name="cantidad">
-                    {% if producto.cant_inventario == 0 %}
+                    {% if producto.stock_bodega < 1 %}
+                    
                     <button class="buy btn btn-lg">
                       <span><i class="bi bi-bag-x-fill"></i> Sin Stock</span>
                     </button>
