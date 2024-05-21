@@ -6,57 +6,53 @@
 
 {% block container %}
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 4d5b463e9488504d06fc5e7500cdc5968b39327c
   <div class="container ps-5 pe-5">
 
     <div class="row mt-5 catalogRow">
-<!-- Filtros -->
-        <div class="col-2 filters">
-          <h1 class="filterTitle mt-3 mb-3"><i class="bi bi-funnel-fill"></i>Filtros</h1>
-          <form role="form product-form" method="GET">
-            <div class="form-group">
-              <label>Palabra clave</label>
-              <input type="text" class="form-control" name="palabra_clave">
-            </div>
-            <!-- filtro Categoria -->
-            <div class="form-group">
-              <label>Tipo Producto</label>
-              <select class="form-control" name="tipo_producto">
-                <option selected value="">...</option>
-                {% for categoria in categorias %}
-                <option value="{{categoria.id_categorias}}">{{categoria.nombre_categoria}}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <!-- filtro Marca -->
-            <div class="form-group">
-              <label>Marca</label>
-              <select class="form-control" name="marca">
-                <option selected value="">...</option>
-                {% for marca in marcas %}
-                <option value="{{marca.id_marca}}">{{marca.nombre_marca}}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <!-- filtro precio -->
-            <div class="form-group mb-3">
-              <label>Ordenar por Precio</label>
-              <select class="form-control" name="precio">
-                <option selected value="">...</option>
-                <option value="1">Menor Precio</option>
-                <option value="2">Mayor Precio</option>
-              </select>
-            </div>
-            <!-- filtro disponible -->
-            <div class="text-center">
-              <button class="buy btn filter p-2" type="submit"><i class="bi bi-filter-circle-fill"></i> Filtrar</button>
-            </div>
-          </form>
+  <!-- Filtros -->
+          <div class="col-2 filters">
+            <h1 class="filterTitle mt-3 mb-3"><i class="bi bi-funnel-fill"></i>Filtros</h1>
+            <form role="form product-form" method="GET">
+              <div class="form-group">
+                <label>Palabra clave</label>
+                <input type="text" class="form-control" name="palabra_clave">
+              </div>
+              <!-- filtro Categoria -->
+              <div class="form-group">
+                <label>Tipo Producto</label>
+                <select class="form-control" name="tipo_producto">
+                  <option selected value="">...</option>
+                  {% for categoria in categorias %}
+                  <option value="{{categoria.id_categorias}}">{{categoria.nombre_categoria}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <!-- filtro Marca -->
+              <div class="form-group">
+                <label>Marca</label>
+                <select class="form-control" name="marca">
+                  <option selected value="">...</option>
+                  {% for marca in marcas %}
+                  <option value="{{marca.id_marca}}">{{marca.nombre_marca}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <!-- filtro precio -->
+              <div class="form-group mb-3">
+                <label>Ordenar por Precio</label>
+                <select class="form-control" name="precio">
+                  <option selected value="">...</option>
+                  <option value="1">Menor Precio</option>
+                  <option value="2">Mayor Precio</option>
+                </select>
+              </div>
+              <!-- filtro disponible -->
+              <div class="text-center">
+                <button class="buy btn filter p-2" type="submit"><i class="bi bi-filter-circle-fill"></i> Filtrar</button>
+              </div>
+            </form>
 
-        </div>
+          </div>
 <!-- Cards de productos -->        
         <div class="col-8 catalogCol">
           <div class="row catalogRow">
@@ -70,6 +66,7 @@
                   <h4 class="productName">{{ producto.nombre_producto }}</h4>
                   <p class="productBrand">{{ producto.id_marca }}</p>
                   <h3 class="productPrice">{{producto.precio}}</h3>
+                  <h6>${{ producto.precio_en_dolares}} USD</h6>
                   <h3></h3>
                 </div>
                 <div class="productButtons">
