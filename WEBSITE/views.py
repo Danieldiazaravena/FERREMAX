@@ -7,7 +7,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 import requests
 from .models import *
@@ -37,11 +38,6 @@ def Base(request):
     }
 
     return render(request,'base.html', context)
-
-# VISTA LOGIN
-def Login(request):
-
-    return render(request,'login.html')
 
 def Woi(request):
     if request.user.groups.filter(name="vendedor").exists():
@@ -109,6 +105,7 @@ def Register(request):
         form = FormularioRegistro()
 
     return render(request, 'registration/register.html',{"form":form})
+
     
 #VISTA PARA AGREGAR NUEVOS PRODUCTOS
 @login_required
@@ -307,9 +304,15 @@ def List(request):
         grupo = "cliente"
         
     producto = Producto.objects.all().order_by('nombre_producto')
+
+    #obtener la cantidad de stock de los productos
+    stock_disponible = get_productos()
+    stock=stock_disponible
+
     context = {
         'grupo' : grupo,
-        'producto' : producto
+        'producto' : producto,
+        'stock' : stock
     }
     return(render(request,'list.html',context,))
 
