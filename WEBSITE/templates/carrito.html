@@ -7,7 +7,7 @@
 
 {% block container %}
 <div class="row rowCarrito justify-content-center" >
-  <div class="col-12 col-md-7 overflow-auto">
+  <div class="col-12 col-md-8 overflow-auto">
     <div class="d-flex justify-content-between">
       <a href="{% url 'catalogo' %}" class="text-white my-2 btn continuar">
         <i class="bi bi-bag-plus me-2"></i>Continuar Comprando
@@ -37,8 +37,9 @@
               {% csrf_token %}
               <input type="hidden" name="id_producto" id="id_producto" value="{{obj.id_producto.id_producto}}">
               <input type="hidden" name="id_carrito" value="{{obj.id_carrito.id_carrito}}">
-              <div id="boton-actualizar" style="display: none;">
-                <button class="bi bi-pencil-square btn btn-act" formaction="{% url 'ActualizarCantidadCarrito' %}"></button>
+              <div id="boton-actualizar" style="display: flex; align-items: center;">
+                <p class="button-text" style="margin: 0; padding: 10px 0;">Cambiar cantidad</p>
+                <button class="bi bi-pencil-square btn btn-act" style="padding: 5px; margin-left: 5px;" formaction="{% url 'ActualizarCantidadCarrito' %}"></button>
               </div>
               <div style="width: 90px;" class="me-2 d-flex">
                 <input class="fw-normal mb-0 form-control bg-light text-dark border-dark" type="number" value="{{obj.cantidad}}" id="cantidad-producto" name="cantidad">

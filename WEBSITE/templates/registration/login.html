@@ -30,19 +30,26 @@
     <form class="formuIniciar" method="post">
         {% csrf_token %}
 
-        <label class="form-label">Nombre de Usuario</label>
-        <input type="text" name="username" id="username" class="formu">
+        <label class="form-label" for="id_username">Nombre de Usuario</label>
+        <input type="text" name="username" id="id_username" class="formu" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="">
 
-        <label class="form-label">Clave</label>
-        <input type="password" name="password" id="password" class="formu">
+        <label class="form-label" for="id_password">Contraseña</label>
+        <input type="password" name="password" id="id_password" class="formu" autocomplete="current-password" required="" >
+        
+        {% if form.errors %}
+            <ul class="errorlist" style="color: white;">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        {% endif %}
 
         <center>
             <button type="submit" class="btn sombra mb-4 send" id="envIni">Iniciar Sesion</button>
         </center>
 
-        {% for message in messages %}
-        <center><p class="" style="font-size: 13px; background: white;">{{message}}</p></center>
-        {% endfor %}
     </form>
 </div>
             

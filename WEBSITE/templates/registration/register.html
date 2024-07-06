@@ -30,13 +30,13 @@
         {% csrf_token %}
 
         <label for="id_username" class="form-label">Nombre de Usuario</label>
-        <input type="text" class="formu" id="id_username" name="username" autofocus="" autocapitalize="none" maxlength="150" required="">
+        <input type="text" class="formu" id="id_username" name="username" autofocus="" autocapitalize="none" maxlength="150" required>
     
         <label for="id_email" class="form-label">Email</label>
-        <input type="email" class="formu" id="id_email" name="email" placeholder="correo@ejemplo.com" autocapitalize="none" maxlength="254" required="">
+        <input type="email" class="formu" id="id_email" name="email" placeholder="correo@ejemplo.com" autocapitalize="none" maxlength="254" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" >
     
         <label for="id_password1" class="form-label">Contraseña</label>
-        <input type="password" class="formu" id="id_password1" name="password1" autocomplete="new-password" required="">
+        <input type="password" class="formu" id="id_password1" name="password1" autocomplete="new-password" required>
 
         <!-- Reglas para crear la contraseña -->
         <p class="form-label">Su contraseña no puede asemejarse a su otra información personal.
@@ -51,7 +51,7 @@
         <label for="id_password2" class="form-label">Repita su Contraseña</label>
         <input type="password" class="formu" id="id_password2" name="password2" autocomplete="new-password" required="">
 
-        <!-- VALIDACIONES DEL LOGIN -->
+        <!-- VALIDACIONES DEL REGISTRO -->
         {% if form.errors %}
         <ul class="errorlist">
             {% for field in form %}
