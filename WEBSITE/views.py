@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
 import django_filters 
+import matplotlib.pyplot as plt
+import io
+import urllib, base64
+from django.shortcuts import render
 from django_filters import DateFilter
 from django.shortcuts import get_object_or_404 
 from django.http import HttpResponse
@@ -686,3 +690,51 @@ def prepararPedido(request):
     }
     return render(request,'prepararPedido.html',context)  
 
+def grafico(data, labels):
+    plt.figure(figsize=(6, 6))
+    plt.pie(data, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.axis('equal') 
+    
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+
+    graphic = base64.b64encode(image_png)
+    graphic = graphic.decode('utf-8')
+    
+    return graphic
+
+def finanzas(request):
+    productos = Producto.objects.all()
+    mercaderias = sum(producto.precio * producto.cant_inventario for producto in productos) * 0.8
+    pedidos = Pedido.objects.all()
+    ventas = sum(pedido.total for pedido in pedidos)
+    impuestos = ventas*0.19
+    inmuebles = 1200000
+    remuneraciones = 8000000
+    proveedores= mercaderias*0.8
+    capital = 3000000
+    activos = mercaderias + inmuebles
+    pasivos = ventas+impuestos+remuneraciones+proveedores
+
+    data = [capital, activos, pasivos]
+    labels = ['Capital', 'Activos', 'Pasivos']
+
+    graficoTorta = grafico(data, labels)
+
+    context = {
+        'mercaderias' : mercaderias, 
+        'ventas' : ventas,
+        'impuestos' : impuestos,
+        'remuneraciones' : remuneraciones,
+        'proveedores' : proveedores,
+        'capital':capital,
+        'inmuebles':inmuebles,
+        'activos':activos,
+        'pasivos':pasivos,
+        'graficoTorta':graficoTorta
+    }
+
+    return render(request, 'finanzas.html', context)

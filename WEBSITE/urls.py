@@ -25,5 +25,6 @@ urlpatterns = [
     path('contacto/',contacto,name="contacto"),
     path('cuenta/',Cuenta,name="Cuenta"),
     path('preprarPedido/',prepararPedido,name="prepararPedido"),
+    path('finanzas/',finanzas, name="finanzas")
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

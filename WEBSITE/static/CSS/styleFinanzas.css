@@ -1,0 +1,56 @@
+.finanzas{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 88vh;
+}
+
+
+.col-3{
+    height: 55vh;
+}
+
+table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+thead th {
+    background-color: #003b75;
+    color: #ffffff;
+    padding: 10px;
+    font-size: 30px;
+    border: 1px solid #003b75;
+}
+
+.balance-sheet .header td {
+    background-color: #8ea9bd;
+    color: #ffffff;
+    padding: 10px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.balance-sheet td, .totals td {
+    padding: 10px;
+    border: 1px solid #003b75;
+}
+
+.balance-sheet td:first-child, .totals td:first-child {
+    text-align: left;
+}
+
+.balance-sheet td:last-child, .totals td:last-child {
+    text-align: right;
+}
+
+.totals thead th {
+    background-color: #003b75;
+    color: #ffffff;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}

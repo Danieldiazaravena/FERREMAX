@@ -40,20 +40,17 @@
                 {% endif %}
                 {% if grupo == 'vendedor' %}
                 <div class="wrapper">
-                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'bodega' %}"><span>Gestionar ventas</span></a>
-                </div>
+                  <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'prepararPedido' %}"><span>Gestionar de Pedidos</span></a>
+              </div>
                 {% endif %}
                 {% if grupo == 'bodeguero' %}
-                <div class="wrapper">
-                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Inventario</span></a>
-                </div>
                 <div class="wrapper">
                     <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'prepararPedido' %}"><span>Preparar de pedidos</span></a>
                 </div>
                 {% endif %}
                 {% if grupo == 'contador' %}
                 <div class="wrapper">
-                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'woi' %}"><span>Finanzas</span></a>
+                    <a class="nav-link ms-4 navItem pb-1 itemNavbar" href="{% url 'finanzas' %}"><span>Finanzas</span></a>
                 </div>
                 {% endif %}
             </div>

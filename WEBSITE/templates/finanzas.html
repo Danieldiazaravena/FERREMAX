@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="/static/CSS/styleFinanzas.css">
+{% endblock %}
+
+{% block container %}
+
+<div class="row finanzas">
+    <div class="col-8">
+        <table class="balance-sheet">
+            <thead>
+                <tr>
+                    <th colspan="2">Balance Financiero FERREMAX</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="header">
+                    <td colspan="2">ACTIVOS</td>
+                </tr>
+                <tr>
+                    <td>MERCADERIAS</td>
+                    <td class="productPrice">{{mercaderias}}</td>
+                </tr>
+                <tr>
+                    <td>INMUEBLES</td>
+                    <td class="productPrice">{{inmuebles}}</td>
+                </tr>
+                <tr class="header">
+                    <td colspan="2">PASIVOS</td>
+                </tr>
+                <tr>
+                    <td>INGRESOS POR VENTAS</td>
+                    <td class="productPrice">{{ventas}}</td>
+                </tr>
+                <tr>
+                    <td>IMPUESTOS POR PAGAR</td>
+                    <td class="productPrice">{{impuestos}}</td>
+                </tr>
+                <tr>
+                    <td>REMUNERACIONES POR PAGAR</td>
+                    <td class="productPrice">{{remuneraciones}}</td>
+                </tr>
+                <tr>
+                    <td>PROVEEDORES</td>
+                    <td class="productPrice">{{proveedores}}</td>
+                </tr>
+                <tr class="header">
+                    <td colspan="2">PATRIMONIO</td>
+                </tr>
+                <tr>
+                    <td>CAPITAL</td>
+                    <td class="productPrice">{{capital}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="col-3">
+         <table class="totals">
+            <thead>
+                <tr>
+                    <th colspan="2">TOTALES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ACTIVOS</td>
+                    <td class="productPrice">{{activos}}</td>
+                </tr>
+                <tr>
+                    <td>PASIVOS</td>
+                    <td class="productPrice">{{pasivos}}</td>
+                </tr>
+                <tr>
+                    <td>PATRIMONIO</td>
+                    <td class="productPrice">{{capital}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <img class="img-fluid" src="data:image/png;base64,{{ graficoTorta }}" >
+        </div>
+        
+    </div>
+        
+
+       
+
+</div>
+
+{% endblock %}
