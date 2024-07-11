@@ -15,32 +15,33 @@
                 <p class="contact-description">
                   Completa el formulario y nuestro equipo se pondra en contacto en la brevedad.
                 </p>
+                
               </div>
 
-            <form class="contact-form" >
+            <form  class="contact-form" >
             
                 <div class="form-group-container">
                   <div class="form-group">
                     <label for="name" class="form-label">Nombre</label>
-                    <input id="name" name="name" class="form-input" placeholder="Tu nombre" type="text" />
+                    <input id="name" name="name" class="form-input" placeholder="Tu nombre" type="text" minlength="3" maxlength="100"/>
                   </div>
                   <div class="form-group">
                     <label for="email" class="form-label">Correo</label>
-                    <input id="email" name="email" class="form-input" placeholder="Tu correo" type="email" />
+                    <input id="email" name="email" class="form-input" placeholder="Tu correo" type="email" maxlength="100"/>
                   </div>
                   <div class="form-group">
                     <label for="phone" class="form-label">Numero</label>
-                    <input id="phone" name="phone" class="form-input" placeholder="+56 9 1234 5678" type="text" />
+                    <input id="phone" name="phone" class="form-input" placeholder="+56 9 1234 5678" type="text"/>
                   </div>
                   <div class="form-group">
                     <label for="message" class="form-label">Mensaje</label>
-                    <textarea class="form-textarea" id="message" name="message" placeholder="Tu Mensaje"></textarea>
+                    <textarea class="form-textarea" id="message" name="message" placeholder="Tu Mensaje" maxlength="100"></textarea>
                   </div>
                 </div>
                 <button class="form-submit" type="submit" formaction="{% url 'contacto' %}" >Enviar</button>
               </form>
 
-        </div>
+        </div>    
 
     </div>
 

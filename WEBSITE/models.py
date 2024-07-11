@@ -19,9 +19,9 @@ class Marca(models.Model):
  #Producto
 class Producto(models.Model):
     id_producto = models.AutoField(db_column="id_producto", primary_key=True)
-    nombre_producto = models.CharField(max_length=100)
-    precio = models.IntegerField()
-    descripcion = models.CharField(max_length=400)
+    nombre_producto = models.CharField(max_length=100, blank=False)
+    precio = models.IntegerField(blank=False)
+    descripcion = models.CharField(max_length=400, blank=False)
     cant_inventario = models.IntegerField(default=0)
     id_categoria = models.ForeignKey(
         "Categoria", on_delete=models.CASCADE, db_column="id_categoria"
