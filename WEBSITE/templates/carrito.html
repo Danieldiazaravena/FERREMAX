@@ -42,7 +42,7 @@
                 <button class="bi bi-pencil-square btn btn-act" style="padding: 5px; margin-left: 5px;" formaction="{% url 'ActualizarCantidadCarrito' %}"></button>
               </div>
               <div style="width: 90px;" class="me-2 d-flex">
-                <input class="fw-normal mb-0 form-control bg-light text-dark border-dark" type="number" value="{{obj.cantidad}}" id="cantidad-producto" name="cantidad">
+                <input class="fw-normal mb-0 form-control bg-light text-dark border-dark" type="number" value="{{obj.cantidad}}" id="cantidad-producto" name="cantidad" min="1">
               </div>
               <div> 
                 <h5 class="prices ms-2 me-2 productPrice"> {{obj.sub_total}}</h5>
