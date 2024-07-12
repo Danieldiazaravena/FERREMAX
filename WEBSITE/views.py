@@ -191,8 +191,8 @@ def Editar(request,pk):
     else:
         grupo = "cliente"
 
-
     cat = Categoria.objects.raw("select * from website_categoria")
+    marcas = Marca.objects.raw("select * from website_marca")
 
     try:
             producto = Producto.objects.get(id_producto=pk)
@@ -200,7 +200,8 @@ def Editar(request,pk):
             "mensaje": "Producto actualizado exitosamente",
             "grupo": grupo,
             "cat": cat,
-            "producto": producto,
+            "marca": marcas,
+            "producto": producto
             }
             return render(request, "editar.html", context)
     except:
@@ -208,6 +209,7 @@ def Editar(request,pk):
             "mensaje": "Oferta no encontrada!",
             "grupo": grupo,
             "cat": cat,
+            "marca": marcas
             }
             return render(request, "list.html", context)
 
@@ -223,13 +225,17 @@ def Updateproducto(request):
 
 
     cat = Categoria.objects.raw("select * from website_categoria")
+    marcas = Marca.objects.raw("select * from website_marca")
+
     if request.method == "POST":
         id_producto = request.POST["id_producto"]
         nombre_producto = request.POST["nombre"]
         precio = request.POST["precio"]
         descripcion = request.POST["descripción"]
         categoria = request.POST["categoria"]
+        marcaProd = request.POST["marca"]
         objCategoria = Categoria.objects.get(id_categoria=categoria)
+        objMarca = Marca.objects.get(id_marca=marcaProd)
 
         objProducto = Producto()
         objProducto.id_producto = id_producto
@@ -237,6 +243,7 @@ def Updateproducto(request):
         objProducto.precio = precio
         objProducto.descripcion = descripcion
         objProducto.id_categoria = objCategoria
+        objProducto.id_marca = objMarca
 
         imagen = request.FILES.get("imagen")
         Imagen_producto.objects.create(
