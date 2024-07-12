@@ -194,7 +194,12 @@ def Editar(request, pk):
     elif request.user.groups.filter(name="contador").exists():
         grupo = "contador"
 
+
     cat = Categoria.objects.all()
+
+    cat = Categoria.objects.raw("select * from website_categoria")
+    marcas = Marca.objects.raw("select * from website_marca")
+
 
     try:
         producto = Producto.objects.get(id_producto=pk)
@@ -212,6 +217,19 @@ def Editar(request, pk):
             "cat": cat,
         }
         return render(request, "list.html", context)
+            "marca": marcas,
+            "producto": producto
+            }
+            return render(request, "editar.html", context)
+    except:
+            context = {
+            "mensaje": "Oferta no encontrada!",
+            "grupo": grupo,
+            "cat": cat,
+            "marca": marcas
+            }
+            return render(request, "list.html", context)
+
 
 def Updateproducto(request):
     grupo = "cliente"
@@ -223,6 +241,7 @@ def Updateproducto(request):
         grupo = "contador"
 
     cat = Categoria.objects.all()
+
 
     if request.method == "POST":
         id_producto = request.POST.get("id_producto")
@@ -259,6 +278,34 @@ def Updateproducto(request):
                 "producto": producto,
             }
             return render(request, 'editar.html', context)
+
+    cat = Categoria.objects.raw("select * from website_categoria")
+    marcas = Marca.objects.raw("select * from website_marca")
+
+    if request.method == "POST":
+        id_producto = request.POST["id_producto"]
+        nombre_producto = request.POST["nombre"]
+        precio = request.POST["precio"]
+        descripcion = request.POST["descripción"]
+        categoria = request.POST["categoria"]
+        marcaProd = request.POST["marca"]
+        objCategoria = Categoria.objects.get(id_categoria=categoria)
+        objMarca = Marca.objects.get(id_marca=marcaProd)
+
+        objProducto = Producto()
+        objProducto.id_producto = id_producto
+        objProducto.nombre_producto = nombre_producto
+        objProducto.precio = precio
+        objProducto.descripcion = descripcion
+        objProducto.id_categoria = objCategoria
+        objProducto.id_marca = objMarca
+
+        imagen = request.FILES.get("imagen")
+        Imagen_producto.objects.create(
+            imagen_producto=imagen,
+            id_producto=objProducto
+        )
+
 
         except Producto.DoesNotExist:
             context = {

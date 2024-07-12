@@ -125,7 +125,7 @@
                         <select class="form-select" id="estadoSelect" aria-label="Default select example" name="estadoOp" onchange='submitForm({{ pedido.id_pedido }})'>
                             <option selected>{{pedido.id_envio.nombre}}</option>
                             {% for estado in estados %}
-                                <option value="{{estado}}">{{estado.nombre}}</option>
+                                <option value="{{estado.id_pedido}}">{{estado.nombre}}</option>
                             {% endfor %}
                         </select>
                     </form>
