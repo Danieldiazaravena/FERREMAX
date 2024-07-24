@@ -2,17 +2,14 @@ from django.shortcuts import render, redirect
 import django_filters 
 import matplotlib.pyplot as plt
 import io
-import urllib, base64
+import base64
 from django.shortcuts import render, get_object_or_404, redirect
-from django_filters import DateFilter
 from django.shortcuts import get_object_or_404 
-from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 import requests
 from .models import *
@@ -215,12 +212,10 @@ def Editar(request, pk):
             "mensaje": "Oferta no encontrada!",
             "grupo": grupo,
             "cat": cat,
-        }
-        return render(request, "list.html", context)
             "marca": marcas,
             "producto": producto
             }
-            return render(request, "editar.html", context)
+        return render(request, "editar.html", context)
     except:
             context = {
             "mensaje": "Oferta no encontrada!",
@@ -253,31 +248,31 @@ def Updateproducto(request):
         if not (id_producto and nombre_producto and precio and descripcion and categoria_id):
             return HttpResponseBadRequest("Todos los campos son obligatorios")
 
-        try:
-            producto = Producto.objects.get(id_producto=id_producto)
-            objCategoria = Categoria.objects.get(id_categoria=categoria_id)
+        
+        producto = Producto.objects.get(id_producto=id_producto)
+        objCategoria = Categoria.objects.get(id_categoria=categoria_id)
 
-            producto.nombre_producto = nombre_producto
-            producto.precio = precio
-            producto.descripcion = descripcion
-            producto.id_categoria = objCategoria
-            producto.save()
+        producto.nombre_producto = nombre_producto
+        producto.precio = precio
+        producto.descripcion = descripcion
+        producto.id_categoria = objCategoria
+        producto.save()
 
-            imagen = request.FILES.get("imagen")
-            if imagen:
-                Imagen_producto.objects.filter(id_producto=producto).delete()
-                Imagen_producto.objects.create(
-                    imagen_producto=imagen,
-                    id_producto=producto
-                )
+        imagen = request.FILES.get("imagen")
+        if imagen:
+            Imagen_producto.objects.filter(id_producto=producto).delete()
+            Imagen_producto.objects.create(
+                imagen_producto=imagen,
+                id_producto=producto
+            )
 
-            context = {
-                'mensaje': "Se guardaron los cambios hechos en la oferta",
-                "grupo": grupo,
-                "cat": cat,
-                "producto": producto,
-            }
-            return render(request, 'editar.html', context)
+        context = {
+            'mensaje': "Se guardaron los cambios hechos en la oferta",
+            "grupo": grupo,
+            "cat": cat,
+            "producto": producto,
+        }
+        return render(request, 'editar.html', context)                          
 
     cat = Categoria.objects.raw("select * from website_categoria")
     marcas = Marca.objects.raw("select * from website_marca")
@@ -305,23 +300,7 @@ def Updateproducto(request):
             imagen_producto=imagen,
             id_producto=objProducto
         )
-
-
-        except Producto.DoesNotExist:
-            context = {
-                'mensaje': "Producto no encontrado",
-                "grupo": grupo,
-                "cat": cat,
-            }
-            return render(request, 'editar.html', context)
-        except Categoria.DoesNotExist:
-            context = {
-                'mensaje': "Categoría no encontrada",
-                "grupo": grupo,
-                "cat": cat,
-                "producto": producto,
-            }
-            return render(request, 'editar.html', context)
+        
     else:
         return HttpResponseBadRequest("Método no permitido")
     
