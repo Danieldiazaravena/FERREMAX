@@ -3,7 +3,7 @@ import django_filters
 import matplotlib.pyplot as plt
 import io
 import urllib, base64
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django_filters import DateFilter
 from django.shortcuts import get_object_or_404 
 from django.http import HttpResponse
@@ -181,25 +181,42 @@ def Agregar(request):
             }
         return render(request, "agregar.html", context)
     
-def Editar(request,pk):
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Producto, Categoria, Imagen_producto
+from django.http import HttpResponseBadRequest
+
+def Editar(request, pk):
+    grupo = "cliente"
     if request.user.groups.filter(name="vendedor").exists():
         grupo = "vendedor"
     elif request.user.groups.filter(name="bodeguero").exists():
         grupo = "bodeguero"
     elif request.user.groups.filter(name="contador").exists():
         grupo = "contador"
-    else:
-        grupo = "cliente"
+
+
+    cat = Categoria.objects.all()
 
     cat = Categoria.objects.raw("select * from website_categoria")
     marcas = Marca.objects.raw("select * from website_marca")
 
+
     try:
-            producto = Producto.objects.get(id_producto=pk)
-            context = {
-            "mensaje": "Producto actualizado exitosamente",
+        producto = Producto.objects.get(id_producto=pk)
+        context = {
+            "mensaje": "Editar Producto",
             "grupo": grupo,
             "cat": cat,
+            "producto": producto,
+        }
+        return render(request, "editar.html", context)
+    except Producto.DoesNotExist:
+        context = {
+            "mensaje": "Oferta no encontrada!",
+            "grupo": grupo,
+            "cat": cat,
+        }
+        return render(request, "list.html", context)
             "marca": marcas,
             "producto": producto
             }
@@ -213,16 +230,54 @@ def Editar(request,pk):
             }
             return render(request, "list.html", context)
 
+
 def Updateproducto(request):
+    grupo = "cliente"
     if request.user.groups.filter(name="vendedor").exists():
         grupo = "vendedor"
     elif request.user.groups.filter(name="bodeguero").exists():
         grupo = "bodeguero"
     elif request.user.groups.filter(name="contador").exists():
         grupo = "contador"
-    else:
-        grupo = "cliente"
 
+    cat = Categoria.objects.all()
+
+
+    if request.method == "POST":
+        id_producto = request.POST.get("id_producto")
+        nombre_producto = request.POST.get("nombre")
+        precio = request.POST.get("precio")
+        descripcion = request.POST.get("descripcion")
+        categoria_id = request.POST.get("categoria")
+
+        if not (id_producto and nombre_producto and precio and descripcion and categoria_id):
+            return HttpResponseBadRequest("Todos los campos son obligatorios")
+
+        try:
+            producto = Producto.objects.get(id_producto=id_producto)
+            objCategoria = Categoria.objects.get(id_categoria=categoria_id)
+
+            producto.nombre_producto = nombre_producto
+            producto.precio = precio
+            producto.descripcion = descripcion
+            producto.id_categoria = objCategoria
+            producto.save()
+
+            imagen = request.FILES.get("imagen")
+            if imagen:
+                Imagen_producto.objects.filter(id_producto=producto).delete()
+                Imagen_producto.objects.create(
+                    imagen_producto=imagen,
+                    id_producto=producto
+                )
+
+            context = {
+                'mensaje': "Se guardaron los cambios hechos en la oferta",
+                "grupo": grupo,
+                "cat": cat,
+                "producto": producto,
+            }
+            return render(request, 'editar.html', context)
 
     cat = Categoria.objects.raw("select * from website_categoria")
     marcas = Marca.objects.raw("select * from website_marca")
@@ -251,11 +306,24 @@ def Updateproducto(request):
             id_producto=objProducto
         )
 
-        context = {
-        'mensaje' : "Se guardaron los cambios hechos en la oferta",
-        "grupo": grupo,
-        }
-        return(render(request,'editar.html',context))
+
+        except Producto.DoesNotExist:
+            context = {
+                'mensaje': "Producto no encontrado",
+                "grupo": grupo,
+                "cat": cat,
+            }
+            return render(request, 'editar.html', context)
+        except Categoria.DoesNotExist:
+            context = {
+                'mensaje': "Categoría no encontrada",
+                "grupo": grupo,
+                "cat": cat,
+                "producto": producto,
+            }
+            return render(request, 'editar.html', context)
+    else:
+        return HttpResponseBadRequest("Método no permitido")
     
 def Eliminar(request,pk):
     if request.user.groups.filter(name="vendedor").exists():

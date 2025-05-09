@@ -87,7 +87,7 @@ class Carrito(models.Model):
 class Carrito_item(models.Model):
     id_carrito= models.ForeignKey('Carrito', on_delete=models.CASCADE, db_column='id_carrito',default=None)
     id_producto= models.ForeignKey('Producto', on_delete=models.CASCADE, db_column='id_producto')
-    cantidad = models.IntegerField(default=0,null=True,blank=False)
+    cantidad = models.PositiveIntegerField(default=0,null=True,blank=False)
     @property
     def sub_total(self):
         sub_total=self.cantidad * self.id_producto.precio
